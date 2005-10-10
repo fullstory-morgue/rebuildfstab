@@ -1,0 +1,43 @@
+rebuildfstab-kanotix (0.5.9) unstable; urgency=low
+
+  * overhaul packaging.
+  * fix lintian errors.
+  * bump standards version.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 10 Oct 2005 16:12:53 +0200
+
+rebuildfstab-kanotix (0.5-8) unstable; urgency=low
+
+  * split msdos/ vfat entries, tweak options.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 25 Jan 2005 01:57:55 +0100
+
+rebuildfstab-kanotix (0.5-7) unstable; urgency=low
+
+  * disable warnings for vfat/ msdos (-o quite).
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 22 Dec 2004 22:00:11 +0100
+
+rebuildfstab-kanotix (0.5-6) unstable; urgency=low
+
+  * Forked for Kanotix compatibility.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 21 Dec 2004 21:13:44 +0100
+
+rebuildfstab-knoppix (0.5-6) unstable; urgency=low
+
+  * Added umask=000 option to ntfs
+
+ -- Klaus Knopper <knopper@knopper.net>  Fri, 31 Oct 2003 14:20:17 +0100
+
+rebuildfstab-knoppix (0.5-5) unstable; urgency=low
+
+  * Added -u uid -g gid options instead of "knoppix" default
+
+ -- Klaus Knopper <knopper@knopper.net>  Wed, 17 Sep 2003 18:55:23 +0200
+
+rebuildfstab-knoppix (0.5-4) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Klaus Knopper <knopper@knopper.net>  Tue, 26 Nov 2002 23:08:25 +0100
