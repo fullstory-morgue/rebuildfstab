@@ -1,3 +1,11 @@
+rebuildfstab-kanotix (0.5.10) unstable; urgency=low
+
+  * Added by KANOTIX message
+  * sw as swap option
+  * printf instead of echo
+
+ -- Joerg Schirottke <master@kanotix.com>  Thu,  3 Nov 2005 12:32:18 +0100
+
 rebuildfstab-kanotix (0.5.9) unstable; urgency=low
 
   * overhaul packaging.
