@@ -9,8 +9,8 @@ umask 022
 [ ! -e /proc/partitions ] && { echo "$0: /proc not mounted, exiting" >&2; exit 1; }
 
 if [ -e /var/run/rebuildfstab.pid ]; then
- ps "$(</var/run/rebuildfstab.pid)" >/dev/null 2>&1 && exit 0
- rm -f /var/run/rebuildfstab.pid
+	ps "$(</var/run/rebuildfstab.pid)" >/dev/null 2>&1 && exit 0
+	rm -f /var/run/rebuildfstab.pid
 fi
 
 echo "$$" >/var/run/rebuildfstab.pid
@@ -26,20 +26,30 @@ ADDEDBYKNOPPIX="# Added by KNOPPIX"
 ADDEDBYKANOTIX="# Added by KANOTIX"
 
 # Simple shell grep, searches for lines STARTING with string
-stringinfile(){
-while read line; do
-case "$line" in $1*) return 0;; esac
-done <"$2"
-return 1
+stringinfile() {
+	while read line; do
+		case "$line" in
+			$1*)
+				return 0
+				;;
+		esac
+	done <"$2"
+
+	return 1
 }
 
-removeentries(){
-# Remove comment line $1 and the following line from file $2
-# sed '/^# Added by KNOPPIX/{N;d;}'
-while read line; do
-case "$line" in $1) read line; continue ;; esac
-echo "$line"
-done <"$2"
+removeentries() {
+	# Remove comment line $1 and the following line from file $2
+	# sed '/^# Added by KNOPPIX/{N;d;}'
+	while read line; do
+		case "$line" in
+			$1)
+				read line
+				continue
+				;;
+		esac
+		echo "$line"
+	done <"$2"
 }
 
 verbose=""
@@ -47,49 +57,83 @@ remove=""
 user=""
 group=""
 arg="$1"
+
 while [ -n "$arg" ]; do
- case "$arg" in
-  -v*) verbose="yes" ;;
-  -r*) remove="yes" ;;
-  -u*) shift; user="$1" ;;
-  -g*) shift; group="$1" ;;
-  *) echo "Usage: $0 [-v[erbose]] [-r[emove_old]] [-u[ser] uid] [ -g[roup] gid]" ;;
- esac
- shift
- arg="$1"
+	case "$arg" in
+		-v*)
+			verbose="yes"
+			;;
+		-r*)
+			remove="yes"
+			;;
+		-u*)
+			shift
+			user="$1"
+			;;
+		-g*)
+			shift
+			group="$1"
+			;;
+		*)
+			echo "Usage: $0 [-v[erbose]] [-r[emove_old]] [-u[ser] uid] [ -g[roup] gid]"
+			;;
+	esac
+
+	shift
+	arg="$1"
 done
 
 [ -n "$verbose" ] && echo "Scanning for new harddisks/partitions..." >&2
 rm -f "$TMP"
 
 if [ -n "$remove" ]; then
- removeentries "$ADDEDBYKNOPPIX" /etc/fstab >"$TMP"
- removeentries "$ADDEDBYKANOTIX" /etc/fstab >"$TMP"
+	removeentries "$ADDEDBYKNOPPIX" /etc/fstab >"$TMP"
+	removeentries "$ADDEDBYKANOTIX" /etc/fstab >"$TMP"
 else
- cat /etc/fstab >"$TMP"
+	cat /etc/fstab >"$TMP"
+fi
+
+iocs=""
+nls=""
+if [ "$(locale charmap)" = "UTF-8" ]; then
+	iocs=",iocharset=utf8"
+	nls=",nls=utf8"
 fi
 
 count=0
 while read device mountpoint fstype relax; do
- stringinfile "$device " "$TMP" || \
- { count="$((count + 1))"
-   [ -d "$mountpoint" ] || mkdir -p "$mountpoint" 2>/dev/null
-   options="noauto,users,exec"
-   case "$fstype" in
-    ntfs) options="${options},ro,umask=000" ;;
-    msdos) options="${options},umask=000,quiet" ;;
-    vfat) options="${options},umask=000,shortname=mixed,quiet" ;;
-    swap) options="sw" ;;
-   esac
-   case "$fstype" in
-   ntfs|vfat|msdos)
-   [ -n "$user" ] && options="$options,uid=$user"
-   [ -n "$group" ] && options="$options,gid=$group"
-   ;;
-   esac
-   echo "$ADDEDBYKANOTIX"
-   #echo "$device $mountpoint $fstype $options 0 0"; }
-   printf "%-15s %-15s %-7s %-15s %-7s %s\n" "$device" "$mountpoint" "$fstype" "$options" "0" "0"; }
+	stringinfile "$device " "$TMP" || \
+	{
+		count="$((count + 1))"
+		[ -d "$mountpoint" ] || mkdir -p "$mountpoint" 2>/dev/null
+		options="noauto,users,exec"
+
+		case "$fstype" in
+			ntfs)
+				options="${options},ro,umask=000${nls}"
+				;;
+			msdos)
+				options="${options},umask=000,quiet${iocs}"
+				;;
+			vfat)
+				options="${options},umask=000,shortname=mixed,quiet${iocs}"
+				;;
+			swap)
+				options="sw"
+				;;
+		esac
+	
+		case "$fstype" in
+			ntfs|vfat|msdos)
+				[ -n "$user" ]  && options="$options,uid=$user"
+				[ -n "$group" ] && options="$options,gid=$group"
+				;;
+		esac
+
+		echo "$ADDEDBYKANOTIX"
+		#echo "$device $mountpoint $fstype $options 0 0"
+		printf "%-15s %-15s %-7s %-15s %-7s %s\n" "$device" "$mountpoint" "$fstype" "$options" "0" "0"
+	}
 done >>"$TMP" <<EOT
 $(scanpartitions)
 EOT
@@ -102,3 +146,4 @@ rm -f /var/run/rebuildfstab.pid
 [ -n "$DISPLAY" ] && sleep 2
 
 exit 0
+

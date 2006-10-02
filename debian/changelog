@@ -1,8 +1,12 @@
-rebuildfstab-kanotix (0.5.12) UNRELEASED; urgency=low
+rebuildfstab-kanotix (0.5.12) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Joerg Schirottke ]
+  * UTF8 detection for iocharset=utf8 option (vfat)
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 17 Dec 2005 03:16:09 +0100
+  [ Stefan Lippers-Hollmann ]
+  * re- indent.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon,  2 Oct 2006 13:48:55 +0200
 
 rebuildfstab-kanotix (0.5.11) unstable; urgency=low
 
