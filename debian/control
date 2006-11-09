@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: rebuildfstab-kanotix
 Architecture: all
-Depends: scanpartitions-kanotix, rxvt
+Depends: scanpartitions-kanotix, rxvt, kanotix-su
 Description: fstab-rebuilder for KANOTIX
  rebuildfstab uses scanpartitions-kanotix to rebuild all harddisk entries
  in /etc/fstab, for automatic integration of USB storage devices and similar.

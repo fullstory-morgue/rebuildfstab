@@ -1,6 +1,7 @@
 #!/bin/bash
-# (C) Klaus Knopper Nov 2002
 # Calls scanpartitions as root and adds entries to /etc/fstab
+# (C) Klaus Knopper Nov 2002
+# (C) 2004-2006 Stefan Lippers-Hollmann <s.l-h@gmx.de>
 
 PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 export PATH
@@ -18,10 +19,9 @@ echo "$$" >/var/run/rebuildfstab.pid
 XSH=""
 [ -n "$DISPLAY" ] && XSH="rxvt -bg black -fg green -cr red -T $0 -e"
 
-[ "`id -u`" != "0" ] && { exec $XSH sudo $0 "$@"; }
+[ "`id -u`" != "0" ] && exec $XSH kanotix-su "$0" "$@"
 
-
-TMP="/tmp/fstab.$$.tmp"
+TMP="$(mktemp -p /tmp/ fstab-XXXXXXXXXX)"
 ADDEDBYKNOPPIX="# Added by KNOPPIX"
 ADDEDBYKANOTIX="# Added by KANOTIX"
 

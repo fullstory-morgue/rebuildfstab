@@ -1,9 +1,11 @@
-rebuildfstab-kanotix (0.5.13) UNRELEASED; urgency=low
+rebuildfstab-kanotix (0.5.13) unstable; urgency=low
 
-  * NOT RELEASED YET
   * fix lintian errors.
+  * fix useless bashism.
+  * fix insecure tempfile handling.
+  * use kanotix-su
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  2 Nov 2006 14:02:42 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  9 Nov 2006 23:13:37 +0100
 
 rebuildfstab-kanotix (0.5.12) unstable; urgency=low
 
