@@ -1,3 +1,9 @@
+rebuildfstab-kanotix (0.5.15) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 16 Nov 2006 22:56:37 +0100
+
 rebuildfstab-kanotix (0.5.14) unstable; urgency=low
 
   * use generic x-terminal-emulator support instead of harcoded application,
