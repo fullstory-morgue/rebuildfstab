@@ -17,7 +17,7 @@ fi
 echo "$$" >/var/run/rebuildfstab.pid
 
 XSH=""
-[ -n "$DISPLAY" ] && XSH="rxvt -bg black -fg green -cr red -T $0 -e"
+[ -n "$DISPLAY" ] && XSH="x-terminal-emulator -T $0 -e"
 
 [ "`id -u`" != "0" ] && exec $XSH kanotix-su "$0" "$@"
 
