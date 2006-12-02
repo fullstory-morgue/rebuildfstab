@@ -1,14 +1,15 @@
-Source: rebuildfstab-kanotix
+Source: rebuildfstab-sidux
 Section: utils
 Priority: extra
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5.0.0)
 Standards-Version: 3.7.2
 
-Package: rebuildfstab-kanotix
+Package: rebuildfstab-sidux
 Architecture: all
-Depends: scanpartitions-kanotix, kanotix-su
+Depends: scanpartitions-sidux, su-me
+Conflicts: rebuildfstab-kanotix
 Recommends: xterm | x-terminal-emulator
-Description: fstab-rebuilder for KANOTIX
+Description: fstab-rebuilder for Sidux
  rebuildfstab uses scanpartitions-kanotix to rebuild all harddisk entries
  in /etc/fstab, for automatic integration of USB storage devices and similar.

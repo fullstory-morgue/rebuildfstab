@@ -19,11 +19,12 @@ echo "$$" >/var/run/rebuildfstab.pid
 XSH=""
 [ -n "$DISPLAY" ] && XSH="x-terminal-emulator -T $0 -e"
 
-[ "`id -u`" != "0" ] && exec $XSH kanotix-su "$0" "$@"
+[ "`id -u`" != "0" ] && exec $XSH su-me "$0" "$@"
 
 TMP="$(mktemp -p /tmp/ fstab-XXXXXXXXXX)"
 ADDEDBYKNOPPIX="# Added by KNOPPIX"
 ADDEDBYKANOTIX="# Added by KANOTIX"
+ADDEDBYKANOTIX="# Added by SIDUX"
 
 # Simple shell grep, searches for lines STARTING with string
 stringinfile() {
@@ -89,6 +90,7 @@ rm -f "$TMP"
 if [ -n "$remove" ]; then
 	removeentries "$ADDEDBYKNOPPIX" /etc/fstab >"$TMP"
 	removeentries "$ADDEDBYKANOTIX" /etc/fstab >"$TMP"
+	removeentries "$ADDEDBYSIDUX" /etc/fstab >"$TMP"
 else
 	cat /etc/fstab >"$TMP"
 fi
@@ -130,7 +132,7 @@ while read device mountpoint fstype relax; do
 				;;
 		esac
 
-		echo "$ADDEDBYKANOTIX"
+		echo "$ADDEDBYSIDUX"
 		#echo "$device $mountpoint $fstype $options 0 0"
 		printf "%-15s %-15s %-7s %-15s %-7s %s\n" "$device" "$mountpoint" "$fstype" "$options" "0" "0"
 	}
