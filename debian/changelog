@@ -1,12 +1,13 @@
-rebuildfstab-sidux (0.5.15) UNRELEASED; urgency=low
+rebuildfstab (0.5.15) unstable; urgency=low
 
-  * NOT RELEASED YET
-
+  [ Joaquim Boura ]
   * Initial version for sidux
-
   * Fixed depend name scanpartitions.
 
- -- Joaquim Boura <x-un-i@sidux.com>  Sat,  2 Dec 2006 21:18:17 +0100
+  [ Stefan Lippers-Hollmann ]
+  * tweak debian/control.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun,  3 Dec 2006 02:21:31 +0100
 
 rebuildfstab-kanotix (0.5.14) unstable; urgency=low
 

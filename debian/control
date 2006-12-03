@@ -1,11 +1,11 @@
-Source: rebuildfstab-sidux
+Source: rebuildfstab
 Section: utils
 Priority: extra
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5.0.0)
+Build-Depends: cdbs, debhelper (>= 5)
 Standards-Version: 3.7.2
 
-Package: rebuildfstab-sidux
+Package: rebuildfstab
 Architecture: all
 Depends: scanpartitions, su-me
 Conflicts: rebuildfstab-kanotix
