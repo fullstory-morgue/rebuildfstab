@@ -10,6 +10,6 @@ Architecture: all
 Depends: scanpartitions, su-me
 Conflicts: rebuildfstab-kanotix
 Recommends: xterm | x-terminal-emulator
-Description: fstab-rebuilder for Sidux
+Description: fstab-rebuilder for sidux
  rebuildfstab uses scanpartitions-kanotix to rebuild all harddisk entries
  in /etc/fstab, for automatic integration of USB storage devices and similar.
