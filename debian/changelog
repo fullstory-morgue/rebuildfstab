@@ -1,6 +1,4 @@
-rebuildfstab (0.5.16) UNRELEASED; urgency=low
-
-  * NOT RELEASED YET
+rebuildfstab (0.5.16) unstable; urgency=low
 
   * fixed mispelling
 
