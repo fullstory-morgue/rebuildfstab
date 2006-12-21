@@ -24,7 +24,7 @@ XSH=""
 TMP="$(mktemp -p /tmp/ fstab-XXXXXXXXXX)"
 ADDEDBYKNOPPIX="# Added by KNOPPIX"
 ADDEDBYKANOTIX="# Added by KANOTIX"
-ADDEDBYKANOTIX="# Added by SIDUX"
+ADDEDBYSIDUX="# Added by SIDUX"
 
 # Simple shell grep, searches for lines STARTING with string
 stringinfile() {
