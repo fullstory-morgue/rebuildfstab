@@ -1,3 +1,9 @@
+rebuildfstab (0.5.18) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 26 Dec 2006 14:31:04 +0100
+
 rebuildfstab (0.5.17) unstable; urgency=low
 
   * Assign value to ADDEDBYSIDUX.
