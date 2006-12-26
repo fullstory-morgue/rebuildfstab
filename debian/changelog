@@ -1,9 +1,5 @@
-rebuildfstab (0.5.17) UNRELEASED; urgency=low
+rebuildfstab (0.5.17) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Kel Modderman ]
   * Assign value to ADDEDBYSIDUX.
 
  -- Kel Modderman <kel@otaku42.de>  Thu, 21 Dec 2006 21:28:49 +1000
