@@ -1,8 +1,8 @@
 rebuildfstab (0.5.18) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
-
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 26 Dec 2006 14:31:04 +0100
+  * on print line if there was a device found
+ -- Joaquim Boura <x-un-i@sidux.com>  Sat, 30 Dec 2006 16:16:11 +0100
 
 rebuildfstab (0.5.17) unstable; urgency=low
 

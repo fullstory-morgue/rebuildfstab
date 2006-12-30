@@ -132,9 +132,12 @@ while read device mountpoint fstype relax; do
 				;;
 		esac
 
-		echo "$ADDEDBYSIDUX"
-		#echo "$device $mountpoint $fstype $options 0 0"
-		printf "%-15s %-15s %-7s %-15s %-7s %s\n" "$device" "$mountpoint" "$fstype" "$options" "0" "0"
+        if [  -n "$device" ]
+        then
+		    echo "$ADDEDBYSIDUX"
+		    #echo "$device $mountpoint $fstype $options 0 0"
+		    printf "%-15s %-15s %-7s %-15s %-7s %s\n" "$device" "$mountpoint" "$fstype" "$options" "0" "0"
+        fi
 	}
 done >>"$TMP" <<EOT
 $(scanpartitions)
