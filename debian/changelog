@@ -1,3 +1,9 @@
+rebuildfstab (0.5.19) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 30 Dec 2006 17:28:36 +0100
+
 rebuildfstab (0.5.18) unstable; urgency=low
 
   * on print line if there was a device found
