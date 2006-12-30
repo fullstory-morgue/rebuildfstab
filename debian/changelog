@@ -1,3 +1,9 @@
+rebuildfstab (0.5.20) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 30 Dec 2006 18:01:40 +0100
+
 rebuildfstab (0.5.19) unstable; urgency=low
 
   * depend on procps.
