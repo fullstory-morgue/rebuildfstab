@@ -1,8 +1,8 @@
-rebuildfstab (0.5.19) UNRELEASED; urgency=low
+rebuildfstab (0.5.19) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * depend on procps.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 30 Dec 2006 17:28:36 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 30 Dec 2006 18:00:24 +0100
 
 rebuildfstab (0.5.18) unstable; urgency=low
 

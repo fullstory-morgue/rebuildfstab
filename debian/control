@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: rebuildfstab
 Architecture: all
-Depends: scanpartitions, su-me
+Depends: procps, scanpartitions, su-me
 Conflicts: rebuildfstab-kanotix
 Recommends: xterm | x-terminal-emulator
 Description: fstab-rebuilder for sidux
