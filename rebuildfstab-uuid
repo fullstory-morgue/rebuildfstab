@@ -1,0 +1,181 @@
+#!/bin/bash
+
+all_uuids=""
+dev_done=""
+dump="0"
+pass="1"
+
+#--------------------------------------------------------------
+start()
+{
+	printf "%s\n" "# /etc/fstab: static file system information"
+	printf "%s\n" "#"
+	printf "%s\n" "#"
+	printf "%s\n" "# <file system> <mount point> <type> <options> <dump> <pass>"
+}
+
+#------------------------------------------------------------
+#output $uuid $point $fstype $options $dump $pass
+output()
+{
+	printf "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6
+}
+
+#--------------------------------------------------------------
+# print_outcdrom $i $cdrom $name $CDR $CDRW $DVD $DVD_R $DVD_RAM
+print_outcdrom()
+{
+	fstype="udf,iso9660"
+	options="user,noauto"
+	output "/dev/$2" $cdrom $fstype $options 0 0
+}
+
+
+#--------------------------------------------------------------
+devs_not_in_media()
+{
+	# Mounted Partitions not in /media
+	# formated as device:mountpoint
+	mntpnt=$(mount |grep -v -e devpts -e tmpfs -e proc -e sysfs \
+		-e udev -e media -e none -e fuse |awk '{print $1":"$3}')
+
+	for i in ${mntpnt}; do
+		# echo \"$all_uuids\"
+		dev=$(echo $i |cut -d ":" -f1)
+		uuid=$(/lib/udev/vol_id -u $dev)
+		[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
+
+		# echo $dev - $uuid - \"$all_uuids\"
+		if test -z "$all_uuids" ; then
+			# the first one
+			all_uuids="$uuid"
+			dev_done="$dev"
+		else
+			if echo "$all_uuids" | grep -q "$uuid" ; then
+				# it's a already used uuid so fallback to dev
+				uuid=$dev
+			else 
+				# this is a new one so add it into the list
+				all_uuids="$all_uuids $uuid"
+			fi
+			dev_done="$dev_done $dev"
+		fi
+
+		point=$(echo $i |cut -d ":" -f2)
+		fstype=$(scanpartitions $dev |awk '{print $3}')
+		options="defaults"
+
+		output $uuid $point $fstype $options $dump $pass
+		#
+	done
+	printf "\n"
+}
+
+#--------------------------------------------------------------
+devs_in_media()
+{
+	#now we scan all existent partitions
+	iocs=""
+	nls=""
+	if [ "$(locale charmap)" = "UTF-8" ]; then
+		iocs=",iocharset=utf8"
+		nls=",nls=utf8"
+	fi
+
+	while read dev point fstype relax; do
+		if echo "$dev_done" |grep -q "$dev" ; then
+			# echo done $dev
+			:
+		else
+			# [ -d "$mountpoint" ] || mkdir -p "$mountpoint" 2>/dev/null
+			options="noauto,users,exec"
+
+			case "$fstype" in
+				ntfs)
+					uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
+					options="${options},ro,umask=000${nls}"
+					[ -n "$user" ]  && options="$options,uid=$user"
+					[ -n "$group" ] && options="$options,gid=$group"
+					;;
+				msdos)
+					uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
+					options="${options},umask=000,quiet${iocs}"
+					[ -n "$user" ]  && options="$options,uid=$user"
+					[ -n "$group" ] && options="$options,gid=$group"
+					;;
+				vfat)
+					uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
+					options="${options},umask=000,shortname=mixed,quiet${iocs}"
+					[ -n "$user" ]  && options="$options,uid=$user"
+					[ -n "$group" ] && options="$options,gid=$group"
+					;;
+				swap)
+					uuid="$(/lib/udev/vol_id -u $dev)"
+					[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
+					options="sw"
+					;;
+				*)
+					uuid="$(/lib/udev/vol_id -u $dev)"
+					[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
+					;;
+			esac
+
+			if echo "$all_uuids" | grep -q "$uuid" ; then
+				# it's a already used uuid so fallback to dev
+				uuid=$dev
+			else 
+				# this is a new one so add it into the list
+				all_uuids="$all_uuids $uuid"
+			fi
+			dev_done="$dev_done $dev"
+			printf "%s\n" "# added by sidux"
+			output $uuid $point $fstype $options $dump $pass
+			printf "\n"
+		fi
+	done <<EOT
+$(scanpartitions)
+EOT
+}
+
+#--------------------------------------------------------------
+optical_devs()
+{
+	info="/proc/sys/dev/cdrom/info"
+
+	# at the end we go through the CD/DVD drives
+	nr_cdroms=$(cat $info |grep -e "drive name" |sed 's/^.*://'| wc -w)
+	i=$(cat $info |grep -e "drive name" |sed 's/^.*://'| wc -w)
+	
+
+	while [ "$i" -gt "0" ]; do
+		col=$i
+		name=$(cat $info |grep -e "drive name" |sed 's/^.*://'|\
+				awk '{print $n}' n=$col  )
+		CDR=$(cat $info |grep 'Can write CD-R:' | sed 's/^.*://' | \
+				awk '{print $n}' n=$col  )
+		CDRW=$(cat $info |grep 'Can write CD-RW:' | sed 's/^.*://' | \
+				awk '{print $n}' n=$col  )
+		DVD=$(cat $info |grep 'Can write DVD:' | sed 's/^.*://' | \
+				awk '{print $n}' n=$col  )
+		DVD_R=$(cat $info |grep 'Can write DVD-R:' | sed 's/^.*://' | \
+				awk '{print $n}' n=$col  )
+		DVD_RAM=$(cat $info |grep 'Can write DVD-RAM:' | sed 's/^.*://' | \
+				awk '{print $n}' n=$col  )
+	
+		cdrom="/dev/cdrom$((nr_cdroms - i))"
+		print_outcdrom $i $cdroms $name $CDR $CDRW $DVD $DVD_R $DVD_RAM
+		i=$((i-1))
+	done
+}
+#---------------------------------------------
+# do the main job
+#---------------------------------------------
+
+start
+
+devs_not_in_media
+
+devs_in_media
+
+optical_devs
+
