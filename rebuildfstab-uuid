@@ -167,6 +167,28 @@ optical_devs()
 		i=$((i-1))
 	done
 }
+#--------------------------------------------------------------
+floppy_devs()
+{
+	fstype="auto"
+	options="rw,user,noauto"
+	dump=0
+	pass=0
+
+	printf "\n"
+	for device in $(echo /sys/block/fd*); do
+		if [ -d "${device}" ] ; then
+
+			point="/media/floppy${device:13}"
+			dev="/dev/fd${device:13}"
+			test ! -d /media/floppy${devnr} && mkdir /media/floppy${devnr}
+
+                        printf "%s\n" "# added by sidux"
+			output $dev $point $fstype $options $dump $pass
+			printf "\n"
+		fi
+	done
+}
 #---------------------------------------------
 # do the main job
 #---------------------------------------------
@@ -179,3 +201,4 @@ devs_in_media
 
 optical_devs
 
+floppy_devs
