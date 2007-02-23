@@ -1,8 +1,12 @@
-rebuildfstab (0.5.20) UNRELEASED; urgency=low
+rebuildfstab (0.5.20) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * install rebuildfstab-uuid:
+    - fix variable usage.
+    - fix generic sh compatibility (tested in bash, dash, pdksh, posh).
+    - ensure running as root.
+    - minor output cosmetics.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 30 Dec 2006 18:01:40 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 23 Feb 2007 01:10:31 +0100
 
 rebuildfstab (0.5.19) unstable; urgency=low
 
