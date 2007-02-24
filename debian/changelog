@@ -1,8 +1,9 @@
-rebuildfstab (0.5.21) UNRELEASED; urgency=low
+rebuildfstab (0.5.21) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * options to create mount point and/or the fstab file.
+  * add copyright header.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 23 Feb 2007 01:15:08 +0100
+ -- Joaquim Boura <x-un-i@sidux.com>  Sat, 24 Feb 2007 14:02:44 +0100
 
 rebuildfstab (0.5.20) unstable; urgency=low
 
