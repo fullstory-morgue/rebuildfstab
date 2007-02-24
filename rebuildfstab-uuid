@@ -1,6 +1,9 @@
 #!/bin/sh
+#--------------------------------------------------------------
 
 [ "$(id -u)" -ne 0 ] && exec su-me "$0" "$@"
+
+#--------------------------------------------------------------
 
 all_uuids=""
 dev_done=""
@@ -8,29 +11,88 @@ dump="0"
 pass="1"
 
 #--------------------------------------------------------------
-start()
+# the defaults
+
+create_mount_points="no"
+write_fstab="no"
+
+FSTAB="Hallo"
+# FSTAB="/etc/fstab"
+
+#--------------------------------------------------------------
+
+usage()
 {
-	printf "%s\n" "# /etc/fstab: static file system information"
-	printf "%s\n" "#"
-	printf "%s\t\t\t\t\t%s\t%s\t%s\t%s\n\n" "# <file system>" "<mount point>" "<type>" "<options>" "<dump> <pass>"
+	echo "$(basename $0)can (re)create a /etc/fstb file"
+	echo "and can create missing mountpoints in /media"
+	echo "default print to stdout, and not (re)create mountpoints"	
+	echo ""
+	echo "-h|--help print this help"
+	echo "-w|--write-fstab (re)create the fstab file"
+	echo "-m|--make-mountpoints  (re)create mountpoints in /media"
+}
+#--------------------------------------------------------------
+
+bad_arg_value()
+{
+	usage
+	exit 1
+}
+
+#--------------------------------------------------------------
+
+out()
+{
+	if [ "$write_fstab" = "yes" ]; then
+		printf "${@}" >> ${FSTAB}
+	else
+		printf "$@"
+	fi
 }
 
 #------------------------------------------------------------
 #output $uuid $point $fstype $options $dump $pass
+
 output()
 {
-	printf "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6
+	if [ "$to_file" = "true" ]; then
+		out "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6 >> ${TO_FILE}
+	else
+		out "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6
+	fi
 }
 
 #--------------------------------------------------------------
-# print_outcdrom $i $cdrom $name $CDR $CDRW $DVD $DVD_R $DVD_RAM
+
+start()
+{
+	out "%s\n" "# /etc/fstab: static file system information" 
+	out "%s\n" "#"
+	out "%s\t\t\t\t\t%s\t%s\t%s\t%s\n\n" "# <file system>" "<mount point>" "<type>" "<options>" "<dump> <pass>"}
+}
+
+#--------------------------------------------------------------
+# print_outcdrom $name $point $CDR $CDRW $DVD $DVD_R $DVD_RAM
+
 print_outcdrom()
 {
 	fstype="udf,iso9660"
 	options="user,noauto"
-	output "/dev/$2" $cdrom $fstype $options 0 0
+ 	output $1 $2 $fstype $options 0 0
 }
 
+#--------------------------------------------------------------
+# return 0 if the device is a removable one
+# firewire and usb are removable ones...
+
+is_device_removable()
+{
+	curdev=$(echo $1 |cut -d / -f 3 |sed 's%\(...\).*$%\1%')
+	ls -l /sys/block/$curdev/device | grep -q -e usb -e fw 
+	# return 0 is the device is removable ...
+	ret=$?
+	return $ret
+}
 #--------------------------------------------------------------
 
 devs_not_in_media()
@@ -41,12 +103,10 @@ devs_not_in_media()
 		-e udev -e media -e none -e fuse |awk '{print $1":"$3}')
 
 	for i in ${mntpnt}; do
-		# echo \"$all_uuids\"
 		dev=$(echo $i |cut -d ":" -f1)
 		uuid=$(/lib/udev/vol_id -u $dev)
 		[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
 
-		# echo $dev - $uuid - \"$all_uuids\"
 		if test -z "$all_uuids" ; then
 			# the first one
 			all_uuids="$uuid"
@@ -68,7 +128,7 @@ devs_not_in_media()
 
 		output $uuid $point $fstype $options $dump $pass
 	done
-	printf "\n"
+	out "\n"
 }
 
 #--------------------------------------------------------------
@@ -85,53 +145,59 @@ devs_in_media()
 
 	while read dev point fstype relax; do
 		if echo "$dev_done" |grep -q "$dev" ; then
-			# echo done $dev
+			# skip this one ...
 			:
 		else
-			# [ -d "$mountpoint" ] || mkdir -p "$mountpoint" 2>/dev/null
-			options="noauto,users,exec"
+			if ! is_device_removable $dev ; then
 
-			case "$fstype" in
-				ntfs)
-					uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
-					options="${options},ro,umask=000${nls}"
-					[ -n "$user" ]  && options="$options,uid=$user"
-					[ -n "$group" ] && options="$options,gid=$group"
-					;;
-				msdos)
-					uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
-					options="${options},umask=000,quiet${iocs}"
-					[ -n "$user" ]  && options="$options,uid=$user"
-					[ -n "$group" ] && options="$options,gid=$group"
-					;;
-				vfat)
-					uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
-					options="${options},umask=000,shortname=mixed,quiet${iocs}"
-					[ -n "$user" ]  && options="$options,uid=$user"
-					[ -n "$group" ] && options="$options,gid=$group"
-					;;
-				swap)
-					uuid="$(/lib/udev/vol_id -u $dev)"
-					[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
-					options="sw"
-					;;
-				*)
-					uuid="$(/lib/udev/vol_id -u $dev)"
-					[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
-					;;
-			esac
+				if [ "$create_mount_points" = "yes" ] ; then
+					[ -d "$point" ] || mkdir -p "$point" 2>/dev/null
+				fi
 
-			if echo "$all_uuids" | grep -q "$uuid" ; then
-				# it's a already used uuid so fallback to dev
-				uuid=$dev
-			else 
-				# this is a new one so add it into the list
-				all_uuids="$all_uuids $uuid"
+				options="noauto,users,exec"
+
+				case "$fstype" in
+					ntfs)
+						uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
+						options="${options},ro,umask=000${nls}"
+						[ -n "$user" ]  && options="$options,uid=$user"
+						[ -n "$group" ] && options="$options,gid=$group"
+						;;
+					msdos)
+						uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
+						options="${options},umask=000,quiet${iocs}"
+						[ -n "$user" ]  && options="$options,uid=$user"
+						[ -n "$group" ] && options="$options,gid=$group"
+						;;
+					vfat)
+						uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
+						options="${options},umask=000,shortname=mixed,quiet${iocs}"
+						[ -n "$user" ]  && options="$options,uid=$user"
+						[ -n "$group" ] && options="$options,gid=$group"
+						;;
+					swap)
+						uuid="$(/lib/udev/vol_id -u $dev)"
+						[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
+						options="sw"
+						;;
+					*)
+						uuid="$(/lib/udev/vol_id -u $dev)"
+						[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
+						;;
+				esac
+
+				if echo "$all_uuids" | grep -q "$uuid" ; then
+					# it's a already used uuid so fallback to dev
+					uuid=$dev
+				else 
+					# this is a new one so add it into the list
+					all_uuids="$all_uuids $uuid"
+				fi
+				dev_done="$dev_done $dev"
+				out "%s\n" "# added by sidux"
+				output $uuid $point $fstype $options $dump $pass
+				out "\n"
 			fi
-			dev_done="$dev_done $dev"
-			printf "%s\n" "# added by sidux"
-			output $uuid $point $fstype $options $dump $pass
-			printf "\n"
 		fi
 	done <<EOT
 $(/usr/sbin/scanpartitions)
@@ -164,9 +230,18 @@ optical_devs()
 		DVD_RAM=$(cat $info |grep 'Can write DVD-RAM:' | sed 's/^.*://' | \
 				awk '{print $n}' n=$col  )
 	
-		cdrom="/dev/cdrom$(($nr_cdroms - $i))"
-		print_outcdrom $i $cdroms $name $CDR $CDRW $DVD $DVD_R $DVD_RAM
+#		cdrom="/dev/cdrom$(($nr_cdroms - $i))"
+		point="/media/cdrom$(($nr_cdroms - $i))"
+
+		if [ "$create_mount_points" = "yes" ] ; then
+			[ -d "$point" ] || mkdir -p "$point" 2>/dev/null
+		fi
+
+
+		out "%s\n" "# added by sidux"
+		print_outcdrom "/dev/$name" $point $CDR $CDRW $DVD $DVD_R $DVD_RAM
 		i=$(($i - 1))
+		out "\n"
 	done
 }
 
@@ -186,18 +261,53 @@ floppy_devs()
 			devnr="$(echo $device | sed s/.*fd//g)"
 			point="/media/floppy${devnr}"
 			dev="/dev/fd${devnr}"
-			test ! -d /media/floppy${devnr} && mkdir /media/floppy${devnr}
 
-                        printf "%s\n" "# added by sidux"
+			if [ "$create_mount_points" = "yes" ] ; then
+					[ -d "$point" ] || mkdir -p "$point" 2>/dev/null
+			fi
+
+			out "%s\n" "# added by sidux"
 			output $dev $point $fstype $options $dump $pass
-			printf "\n"
+			out "\n"
 		fi
 	done
 }
 
-#---------------------------------------------
+#--------------------------------------------------------------
+# preparation
+#--------------------------------------------------------------
+
+TEMP=`getopt -o hmw --long help,make-mountpoints,write-fstab \
+     -n  "$(basename $0)" -- "$@"`
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+while true ; do
+	case "$1" in
+		-h|--help)
+			usage;
+			exit 0
+			;;
+		-w|--write-fstab) 
+			write_fstab="yes";
+			shift ;;
+		-m|--make-mountpoints)
+			create_mount_points="no" ;
+			shift ;;
+
+		--) shift ; break ;;
+		*) echo "Internal error!" ; exit 1 ;;
+	esac
+done
+
+test -e ${FSTAB} && rm -f ${FSTAB}
+
+#--------------------------------------------------------------
 # do the main job
-#---------------------------------------------
+#--------------------------------------------------------------
 
 start
 
