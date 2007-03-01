@@ -1,8 +1,9 @@
-rebuildfstab (0.5.23) UNRELEASED; urgency=low
+rebuildfstab (0.5.23) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * rebuildfstab-kanotix was never part of sidux or debian, don't conflict
+    with it.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 25 Feb 2007 14:14:41 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  1 Mar 2007 17:40:52 +0100
 
 rebuildfstab (0.5.22) unstable; urgency=low
 
