@@ -38,8 +38,7 @@ pass="1"
 create_mount_points="no"
 write_fstab="no"
 
-FSTAB="Hallo"
-# FSTAB="/etc/fstab"
+FSTAB="/etc/fstab"
 
 #--------------------------------------------------------------
 
