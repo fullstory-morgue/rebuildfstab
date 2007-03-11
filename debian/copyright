@@ -1,8 +1,34 @@
 This package was debianized by Klaus Knopper <knoppix@knopper.net> on
 Mon, 12 Aug 2002 13:56:26 +0200.
 
-It was downloaded from http://www.knopper.net/knoppix/sources/
+Upstream Authors:
+	Kel Modderman <kel@otaku42.de>
+	Joaquim Boura <x-un-i@sidux.com>
 
-Upstream Author: Klaus Knopper <knoppix@knopper.net>
+Copyright:
+	(C) 2007 sidux Foundation,Inc.
+	(C) 2007 Kel Modderman <kel@otaku42.de>
+	(C) 2007 Michiel de Boer <locsmif@kanotix.com>
+	(C) 2007 Joaquim Boura <x-un-i@sidux.com>
 
-Copyright: GPL, see /usr/share/common-licenses
+Based on the original rebuildfstab and scanpartitions written by
+Klaus Knopper from http://www.knopper.net/knoppix/sources/
+
+This is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2, or (at your option) any later
+version.
+
+This is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License with
+your Debian GNU/Linux system, in /usr/share/common-licenses/GPL, or with
+the dpkg source package as the file COPYING.  If not, write to the
+Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+MA 02110-1301, USA.
+
+On Debian GNU/Linux systems, the text of the GPL license can be
+found in /usr/share/common-licenses/GPL.

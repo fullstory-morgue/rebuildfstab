@@ -1,2 +1,2 @@
-rebuildfstab		usr/sbin/
-rebuildfstab-uuid	usr/sbin/
+rebuildfstab	usr/sbin/
+scanpartitions	usr/sbin/

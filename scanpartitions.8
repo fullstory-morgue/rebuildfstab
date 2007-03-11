@@ -1,0 +1,55 @@
+.TH SCANPARTITIONS "8" "January 2007" "" ""
+.SH NAME
+scanpartitions \- fstab helper script
+.SH SYNOPSIS
+\fBscanpartitions\fR [\-l|\-\-labels] [\-u|\-\-uuids] [devices]
+.SH DESCRIPTION
+Parses /proc/partitions and generates a device name, mount point
+and filesystem type suitable for use in /etc/fstab for each valid
+partition. vol_id is used to gather information about the volume
+label and filesystem uuid/type for each partition.
+.PP
+Using UUID or LABEL disk identification in /etc/fstab is more robust
+than using the device name; adding or removing a system disk changes
+disk device names but not the filesystem uuid or volume label.
+.PP
+LABEL is given priority over UUID when the \fB\-\-labels\fR and 
+\fB\-\-uuids\fR options are used together.
+.PP
+Linux non-native filesystems (eg. ntfs, vfat, hfsplus) may not be
+able to make use of the LABEL or UUID volume identifiers. These
+filesystems can use the corresponding /dev/disk/by-label/ or
+/dev/disk/by-uuid/ device nodes when existing, otherwise fall back
+to the base device node (eg /dev/hda1) and not benefit from the
+advantages described above.
+.PP
+.SH OPTIONS
+.TP
+\fB\-l|\-\-labels\fR
+Enable the use of the volume LABEL identifier.
+.TP
+\fB\-u|\-\-uuids\fR
+Enable the use of the filesystem UUID identifier.
+.PP
+.SH USAGE
+\fBscanpartitions\fR will parse \fI/proc/partitions\fR if no block
+device names are given as arguments.
+.PP
+The following example will print a line for all supported volumes
+contained in \fI/proc/partitions\fR, using UUID metainfo for volume
+name:
+.PP
+.RS
+\fBscanpartitions \-\-uuids\fR
+.RE
+.PP
+The following example with print a line for block devices /dev/sda1
+and /dev/sda2, using LABEL metainfo where possible:
+.PP
+.RS
+\fBscanpartitions \-\-labels /dev/sda1 /dev/sda2\fR
+.RE
+.PP
+.SH AUTHOR
+This manual page was written by Kel Modderman <kel@otaku42.de> for
+the Debian GNU system (but may be used by others).

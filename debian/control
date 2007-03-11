@@ -7,8 +7,12 @@ Standards-Version: 3.7.2
 
 Package: rebuildfstab
 Architecture: all
-Depends: procps, scanpartitions, su-me
+Depends: procps, su-me, udev
 Recommends: xterm | x-terminal-emulator
-Description: fstab-rebuilder for sidux
+Description: fstab and mountpoint generator
  rebuildfstab uses scanpartitions to rebuild all harddisk entries
- in /etc/fstab, for automatic integration of USB storage devices and similar.
+ in /etc/fstab and create mountpoints.
+ .
+ scanpartitions reads /proc/partitions and tries to guess
+ the filesystem on each partition for automatic /etc/fstab
+ generation.
