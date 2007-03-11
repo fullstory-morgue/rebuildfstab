@@ -9,7 +9,6 @@ Standards-Version: 3.7.2
 Package: rebuildfstab
 Architecture: all
 Depends: procps, su-me, udev
-Recommends: xterm | x-terminal-emulator
 Description: fstab and mountpoint generator
  rebuildfstab uses scanpartitions to rebuild all harddisk entries
  in /etc/fstab and create mountpoints.
