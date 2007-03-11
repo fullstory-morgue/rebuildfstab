@@ -7,8 +7,9 @@ rebuildfstab (0.5.27) UNRELEASED; urgency=low
   * Add -g|--group and -u|--user handling to rebuildfstab-uuid.
   * Rename rebuildfstab-uuid -> rebuildfstab, removing knopper's old script.
   * Merge in scanpartitions.
+  * Minor cleanup of scanpartitions.
 
- -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 09:16:27 +1000
+ -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 09:40:11 +1000
 
 rebuildfstab (0.5.26) unstable; urgency=low
 

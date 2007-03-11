@@ -37,10 +37,9 @@ function parse_vol_id(name)
 	# ensure name has /dev/ stripped from it, and dev is prefixed with /dev/
 	sub(/^\/dev\//, "", name); dev = "/dev/" name
 
-	# test block device node for existance
-	if (blockdev_exists(dev) != 0) return 0
-	# device name blacklist
-	if (name ~ /^(ram|cloop|loop).+/) return 0
+	# test block device node for validity
+	if (blockdev_exists(dev) != 0 || name ~ /^(ram|cloop|loop).+/)
+		return 0
 
 	# run vol_id on dev, discard stderr
 	cmd = "/lib/udev/vol_id " dev " 2>/dev/null"
@@ -51,11 +50,9 @@ function parse_vol_id(name)
 		id[tolower(vol_id[1])] = vol_id[2]
 	}
 
-	# return if we cannot handle fs usage type
-	if (id["usage"] !~ /(filesystem|other)/) return 0
-
-	# return if we can't reliably use the partitions filesystem
-	if (!id["type"] || id["type"] == "unknown") return 0
+	# return if we cannot handle fs
+	if (id["usage"] !~ /(filesystem|other)/ || !id["type"] || id["type"] == "unknown")
+		return 0
 
 	# use metainfo for linux native filesystems
 	if (id["type"] ~ /^(ext[234]|jfs|reiser|swap|xfs)/) {
