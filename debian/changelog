@@ -1,8 +1,8 @@
 rebuildfstab (0.5.26) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
-
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed,  7 Mar 2007 20:12:29 +0100
+  * fixed setting as it did not created any dirs on /media
+ -- Joaquim Boura <x-un-i@sidux.com>  Sun, 11 Mar 2007 13:15:18 +0100
 
 rebuildfstab (0.5.25) unstable; urgency=low
 

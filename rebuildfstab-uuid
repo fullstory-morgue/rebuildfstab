@@ -71,6 +71,16 @@ out()
 	fi
 }
 
+#--------------------------------------------------------------
+
+create_media_entry()
+{
+	mypoint=$1
+	if [ "$create_mount_points" = "yes" ] ; then
+		[ -d "$mypoint" ] || mkdir -p "$mypoint" 2>/dev/null
+	fi
+}
+
 #------------------------------------------------------------
 #output $uuid $point $fstype $options $dump $pass
 
@@ -171,9 +181,7 @@ devs_in_media()
 		else
 			if ! is_device_removable $dev ; then
 
-				if [ "$create_mount_points" = "yes" ] ; then
-					[ -d "$point" ] || mkdir -p "$point" 2>/dev/null
-				fi
+				create_media_entry $point
 
 				options="noauto,users,exec"
 
@@ -254,10 +262,7 @@ optical_devs()
 #		cdrom="/dev/cdrom$(($nr_cdroms - $i))"
 		point="/media/cdrom$(($nr_cdroms - $i))"
 
-		if [ "$create_mount_points" = "yes" ] ; then
-			[ -d "$point" ] || mkdir -p "$point" 2>/dev/null
-		fi
-
+		create_media_entry $point
 
 		out "%s\n" "# added by sidux"
 		print_outcdrom "/dev/$name" $point $CDR $CDRW $DVD $DVD_R $DVD_RAM
@@ -275,7 +280,6 @@ floppy_devs()
 	dump=0
 	pass=0
 
-	printf "\n"
 	for device in $(echo /sys/block/fd*); do
 		if [ -d "${device}" ] ; then
 
@@ -283,9 +287,7 @@ floppy_devs()
 			point="/media/floppy${devnr}"
 			dev="/dev/fd${devnr}"
 
-			if [ "$create_mount_points" = "yes" ] ; then
-					[ -d "$point" ] || mkdir -p "$point" 2>/dev/null
-			fi
+			create_media_entry $point
 
 			out "%s\n" "# added by sidux"
 			output $dev $point $fstype $options $dump $pass
@@ -316,7 +318,7 @@ while true ; do
 			write_fstab="yes";
 			shift ;;
 		-m|--make-mountpoints)
-			create_mount_points="no" ;
+			create_mount_points="yes" ;
 			shift ;;
 
 		--) shift ; break ;;
@@ -340,3 +342,4 @@ optical_devs
 
 floppy_devs
 
+exit 0
