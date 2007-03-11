@@ -44,9 +44,9 @@ FSTAB="/etc/fstab"
 
 usage()
 {
-	echo "$(basename $0)can (re)create a /etc/fstb file"
+	echo "$(basename $0)can (re)create the /etc/fsatb file"
 	echo "and can create missing mountpoints in /media"
-	echo "default print to stdout, and not (re)create mountpoints"	
+	echo "default is to print to stdout, and not (re)create mountpoints"	
 	echo ""
 	echo "-h|--help print this help"
 	echo "-w|--write-fstab (re)create the fstab file"
