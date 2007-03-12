@@ -1,0 +1,44 @@
+.TH REBUILDFSTAB "8" "March 2007" "" ""
+.SH NAME
+rebuildfstab \- fstab and mountpoint generator
+.SH SYNOPSIS
+\fBrebuildfstab\fR \fI<options>\fR
+.SH DESCRIPTION
+Uses \fBscanpartitions\fR to rebuild all harddisk entries in \fI/etc/fstab\fR
+and create mountpoints.
+.PP
+\fBscanpartitions\fR reads \fI/proc/partitions\fR and tries to guess the
+filesystem on each partition for automatic \fI/etc/fstab\fR generation.
+.PP
+.SH OPTIONS
+.TP
+\fB\-h|\-\-help\fR
+print help screen
+.TP
+\fB\-w|\-\-write-fstab\fR
+(re)create the fstab file
+.TP
+\fB\-m|\-\-make-mountpoints\fR
+(re)create mountpoints in /media
+.TP
+\fB\-U|\-\-uuids\fR
+use UUID's for mount names when possible
+.TP
+\fB\-L|\-\-labels\fR
+use LABELS's for mount names when possible
+.TP
+\fB\-g|\-\-group\fR \fI<groupname>\fR
+group to create special mount options for
+.TP
+\fB\-u|\-\-user\fR \fI<username>\fR
+user to create special mount options for
+.TP
+\fB\-f|\-\-fstab\fR \fI<file>\fR
+target file to write output to
+.TP
+\fB\-d|\-\-debug\fR
+debug sh code execution
+.PP
+.SH AUTHOR
+This manual page was written by Kel Modderman <kel@otaku42.de> for
+the Debian GNU system (but may be used by others).

@@ -22,8 +22,9 @@ rebuildfstab (0.6.1) UNRELEASED; urgency=low
   * BUGFIX: do not unconditionally nuke /etc/fstab. Do not completely nuke it
     at all. Make a backup of /etc/fstab to /etc/fstab.old if we intend to write
     a new file.
+  * Write a basic manpage for rebuildfstab.
 
- -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 18:26:31 +1000
+ -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 19:01:25 +1000
 
 rebuildfstab (0.6.0) unstable; urgency=low
 
