@@ -165,7 +165,7 @@ devs_not_in_media()
 		else
 			if echo "$all_dev_names" | grep -q "$dev_name" ; then
 				# comment out device with duplicate uuid
-				dev_name="# $dev_name"
+				dev_name="#$dev_name"
 			else 
 				# this is a new one so add it into the list
 				all_dev_names="$all_dev_names $dev_name"
@@ -251,7 +251,7 @@ devs_in_media()
 
 				if echo "$all_dev_names" | grep -q "$dev_name" ; then
 					# it's a already used uuid so fallback to dev
-					dev_name="# $dev_name"
+					dev_name="#$dev_name"
 				else 
 					# this is a new one so add it into the list
 					all_dev_names="$all_dev_names $dev_name"
