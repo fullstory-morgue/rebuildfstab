@@ -1,4 +1,4 @@
-rebuildfstab (0.5.27) unstable; urgency=low
+rebuildfstab (0.6.0) unstable; urgency=low
 
   * Add -g|--group and -u|--user handling to rebuildfstab-uuid.
   * Rename rebuildfstab-uuid -> rebuildfstab, removing knopper's old script.
