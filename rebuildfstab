@@ -370,7 +370,7 @@ while true ; do
 			exit 0
 			;;
 		-w|--write-fstab) 
-			write_fstab="yes";
+			write_fstab="yes"
 			shift
 			;;
 		-L|--labels)
@@ -382,7 +382,7 @@ while true ; do
 			shift
 			;;
 		-m|--make-mountpoints)
-			create_mount_points="yes" ;
+			create_mount_points="yes"
 			shift
 			;;
 		-g|--group)
