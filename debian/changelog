@@ -1,3 +1,9 @@
+rebuildfstab (0.6.1) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Mar 2007 01:12:07 +0100
+
 rebuildfstab (0.6.0) unstable; urgency=low
 
   * Add -g|--group and -u|--user handling to rebuildfstab-uuid.
