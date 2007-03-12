@@ -1,3 +1,9 @@
+rebuildfstab (0.6.4) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Mar 2007 15:44:55 +0100
+
 rebuildfstab (0.6.3) unstable; urgency=low
 
   * Don't introduce whitespace inbetween comment and dev_name for duplicated
