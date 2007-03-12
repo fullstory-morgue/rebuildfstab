@@ -149,7 +149,7 @@ devs_not_in_media()
 		# clobber positional variables
 		[ "$#" != 0 ] && shift $#
 		
-		# assign positional parameters: ($1, $2, $3) = ($uuid, $mntpnt, $fstype)
+		# assign positional parameters: ($1, $2, $3) = ($dev_name, $mntpnt, $fstype)
 		set -- $(scanpartitions $scan_opts $dev 2>/dev/null)
 		
 		# 3 positional parameters were not assigned above, via scanpartitions
