@@ -178,7 +178,8 @@ devs_not_in_media()
 
 		output $dev_name $pnt $fstype $options $dump $pass
 	done
-	out "\n"
+	
+	[ "${mntpnt}" ] && out "\n"
 }
 
 #--------------------------------------------------------------

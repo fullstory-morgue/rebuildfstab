@@ -6,8 +6,10 @@ rebuildfstab (0.6.3) UNRELEASED; urgency=low
   [ Kel Modderman ]
   * Don't introduce whitespace inbetween comment and dev_name for duplicated
     device entries, it spoils the output.
+  * Only print trailing whiiespace in devs_not_in_media() when mount points
+    are printed above.
 
- -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 22:02:27 +1000
+ -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 22:24:13 +1000
 
 rebuildfstab (0.6.2) unstable; urgency=low
 
