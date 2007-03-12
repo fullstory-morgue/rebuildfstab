@@ -1,9 +1,5 @@
-rebuildfstab (0.6.1) UNRELEASED; urgency=low
+rebuildfstab (0.6.1) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Kel Modderman ]
   * Use dash in shebang line, this script is non-interactive. Depend on dash.
   * Add myself to list of copyright holders.
   * Rename all_uuids -> all_dev_names to remain uuid/label/name agnostic.
