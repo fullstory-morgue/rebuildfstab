@@ -57,7 +57,7 @@ usage()
 	echo "-g|--group <groupname>	group to create special mount options for"
 	echo "-u|--user <username>	user to create special mount options for"
 	echo "-f|--fstab <file>		target file to write output to"
-	echo "-a|--auto	yes|no		set auto mount option where applicable"
+	echo "-a|--auto			set auto mount option where applicable"
 	echo "-d|--debug		debug sh code execution"
 	echo ""
 }
@@ -333,15 +333,8 @@ eval set -- "$TEMP"
 while true ; do
 	case "$1" in
 		-a|--auto)
-			case "$2" in
-				1|yes)
-					auto=1
-					;;
-				*)
-					auto=0
-					;;
-			esac
-			shift 2
+			auto=1
+			shift
 			;;
 		-d|--debug)
 			set -x
