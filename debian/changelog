@@ -1,3 +1,9 @@
+rebuildfstab (0.6.3) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Mar 2007 12:02:39 +0100
+
 rebuildfstab (0.6.2) unstable; urgency=low
 
   * Don't bother with /etc/default/rebuildfstab conffile.
