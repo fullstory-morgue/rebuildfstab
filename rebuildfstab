@@ -39,17 +39,6 @@ fstab="/etc/fstab"
 scan_opts=""
 
 #--------------------------------------------------------------
-# override scan options via configfile
-
-if [ -e /etc/default/rebuildfstab ]; then
-	. /etc/default/rebuildfstab
-fi
-
-if [ -n "$DEFAULT_DEV_NAME_OPTIONS" ]; then
-	scan_opts="$DEFAULT_DEV_NAME_OPTIONS"
-fi
-
-#--------------------------------------------------------------
 
 usage()
 {
