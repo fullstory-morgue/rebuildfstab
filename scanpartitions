@@ -51,7 +51,7 @@ function parse_vol_id(name)
 	}
 
 	# return if we cannot handle fs
-	if (id["usage"] !~ /(filesystem|other)/ || !id["type"] || id["type"] == "unknown")
+	if (id["usage"] !~ /(filesystem|other)/ || !id["type"] || id["type"] ~ /(unknown|iso9660)/)
 		return 0
 
 	# use metainfo for linux native filesystems
