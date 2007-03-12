@@ -1,8 +1,13 @@
 rebuildfstab (0.6.5) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Mar 2007 15:53:42 +0100
+  [ Kel Modderman ]
+  * Fixed flawed attempt to not print extra blank line.
+  * Remove useless $ret variable.
+
+ -- Kel Modderman <kel@otaku42.de>  Tue, 13 Mar 2007 00:57:48 +1000
 
 rebuildfstab (0.6.4) unstable; urgency=low
 
