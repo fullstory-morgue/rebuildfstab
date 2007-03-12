@@ -57,6 +57,7 @@ usage()
 	echo "-g|--group <groupname>	group to create special mount options for"
 	echo "-u|--user <username>	user to create special mount options for"
 	echo "-f|--fstab <file>		target file to write output to"
+	echo "-a|--auto	yes|no		set auto mount option where applicable"
 	echo "-d|--debug		debug sh code execution"
 	echo ""
 }
@@ -225,7 +226,11 @@ devs_in_media()
 
 				create_media_entry $point
 
-				options="noauto,users,exec"
+				if [ "$auto" = 1 ]; then
+					options="auto,users,exec"
+				else
+					options="noauto,users,exec"
+				fi
 
 				case "$fstype" in
 					ntfs)
@@ -317,7 +322,7 @@ floppy_devs()
 # preparation
 #--------------------------------------------------------------
 
-TEMP=`getopt -o df:hLmwg:u:U --long debug,ftsab:,help,labels,make-mountpoints,write-fstab,group:,user:,uuids \
+TEMP=`getopt -o a:df:hLmwg:u:U --long auto:,debug,ftsab:,help,labels,make-mountpoints,write-fstab,group:,user:,uuids \
      -n  "$(basename $0)" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -327,6 +332,17 @@ eval set -- "$TEMP"
 
 while true ; do
 	case "$1" in
+		-a|--auto)
+			case "$2" in
+				1|yes)
+					auto=1
+					;;
+				*)
+					auto=0
+					;;
+			esac
+			shift 2
+			;;
 		-d|--debug)
 			set -x
 			shift

@@ -8,8 +8,9 @@ rebuildfstab (0.6.3) UNRELEASED; urgency=low
     device entries, it spoils the output.
   * Only print trailing whiiespace in devs_not_in_media() when mount points
     are printed above.
+  * Add -a|--auto to set auto mount option where applicable.
 
- -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 22:24:13 +1000
+ -- Kel Modderman <kel@otaku42.de>  Tue, 13 Mar 2007 00:12:05 +1000
 
 rebuildfstab (0.6.2) unstable; urgency=low
 
