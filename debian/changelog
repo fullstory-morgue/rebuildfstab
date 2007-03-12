@@ -2,8 +2,10 @@ rebuildfstab (0.6.2) unstable; urgency=low
 
   * Don't bother with /etc/default/rebuildfstab conffile.
   * Filter out block devices with iso9660 fstype.
+  * Fix optical drive fstab management, let udev do the detecting, use what it
+    gives us interms of persistent device names.
 
- -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 20:18:39 +1000
+ -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 20:59:19 +1000
 
 rebuildfstab (0.6.1) unstable; urgency=low
 

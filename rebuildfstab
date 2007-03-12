@@ -273,36 +273,16 @@ EOT
 
 optical_devs()
 {
-	info="/proc/sys/dev/cdrom/info"
+	for i in /dev/cdrom*; do
+		test -b "$i" || continue
 
-	# at the end we go through the CD/DVD drives
-	nr_cdroms=$(cat $info |grep -e "drive name" |sed 's/^.*://'| wc -w)
-	i=$(cat $info |grep -e "drive name" |sed 's/^.*://'| wc -w)
-	
-
-	while [ "$i" -gt "0" ]; do
-		col=$i
-		name=$(cat $info |grep -e "drive name" |sed 's/^.*://'|\
-				awk '{print $n}' n=$col  )
-		CDR=$(cat $info |grep 'Can write CD-R:' | sed 's/^.*://' | \
-				awk '{print $n}' n=$col  )
-		CDRW=$(cat $info |grep 'Can write CD-RW:' | sed 's/^.*://' | \
-				awk '{print $n}' n=$col  )
-		DVD=$(cat $info |grep 'Can write DVD:' | sed 's/^.*://' | \
-				awk '{print $n}' n=$col  )
-		DVD_R=$(cat $info |grep 'Can write DVD-R:' | sed 's/^.*://' | \
-				awk '{print $n}' n=$col  )
-		DVD_RAM=$(cat $info |grep 'Can write DVD-RAM:' | sed 's/^.*://' | \
-				awk '{print $n}' n=$col  )
-	
-		#cdrom="/dev/cdrom$(($nr_cdroms - $i))"
-		point="/media/cdrom$(($nr_cdroms - $i))"
+		dev="$i"
+		point="/media/$(basename $dev)"
 
 		create_media_entry $point
 
 		out "%s\n" "# added by sidux"
-		print_outcdrom "/dev/$name" $point $CDR $CDRW $DVD $DVD_R $DVD_RAM
-		i=$(($i - 1))
+		print_outcdrom $dev $point
 		out "\n"
 	done
 }
