@@ -1,2 +1,3 @@
-rebuildfstab	usr/sbin/
-scanpartitions	usr/sbin/
+rebuildfstab		usr/sbin/
+scanpartitions		usr/sbin/
+default/rebuildfstab	etc/default/

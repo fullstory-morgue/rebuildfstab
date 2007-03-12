@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/dash
 #
 # (Copyright  (C) 2007 sidux Foundation,Inc.
 #             (C) 2007 Joaquim Boura <x-un-i@sidux.com>
+#             (C) 2007 Kel Modderman <kel@otaku42.de>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,33 +27,49 @@
 [ "$(id -u)" -ne 0 ] && exec su-me "$0" "$@"
 
 #--------------------------------------------------------------
+# the defaults
 
-all_uuids=""
+all_dev_names=""
 dev_done=""
 dump="0"
 pass="1"
-
-#--------------------------------------------------------------
-# the defaults
-
 create_mount_points="no"
 write_fstab="no"
+fstab="/etc/fstab"
+scan_opts=""
 
-FSTAB="/etc/fstab"
+#--------------------------------------------------------------
+# override scan options via configfile
+
+if [ -e /etc/default/rebuildfstab ]; then
+	. /etc/default/rebuildfstab
+fi
+
+if [ -n "$DEFAULT_DEV_NAME_OPTIONS" ]; then
+	scan_opts="$DEFAULT_DEV_NAME_OPTIONS"
+fi
 
 #--------------------------------------------------------------
 
 usage()
 {
-	echo "$(basename $0)can (re)create the /etc/fstab file"
-	echo "and can create missing mountpoints in /media"
-	echo "default is to print to stdout, and not (re)create mountpoints"	
 	echo ""
-	echo "-h|--help print this help"
-	echo "-w|--write-fstab (re)create the fstab file"
-	echo "-m|--make-mountpoints  (re)create mountpoints in /media"
-	echo "-g|--group group to create special mount options for"
-	echo "-u|--user user to create special mount options for"
+	echo "$(basename $0) can (re)create the /etc/fstab file and can create"
+	echo "missing mountpoints in /media"
+	echo ""
+	echo "By default $(basename $0) prints fstab to stdout, and does not"
+	echo "(re)create mountpoints"
+	echo ""
+	echo "-h|--help			print this help"
+	echo "-w|--write-fstab		(re)create the fstab file"
+	echo "-m|--make-mountpoints	(re)create mountpoints in /media"
+	echo "-U|--uuids		use UUID's for mount names when possible"
+	echo "-L|--labels		use LABELS's for mount names when possible"
+	echo "-g|--group <groupname>	group to create special mount options for"
+	echo "-u|--user <username>	user to create special mount options for"
+	echo "-f|--fstab <file>		target file to write output to"
+	echo "-d|--debug		debug sh code execution"
+	echo ""
 }
 #--------------------------------------------------------------
 
@@ -67,7 +84,7 @@ bad_arg_value()
 out()
 {
 	if [ "$write_fstab" = "yes" ]; then
-		printf "${@}" >> ${FSTAB}
+		printf "${@}" >> ${fstab}
 	else
 		printf "$@"
 	fi
@@ -130,36 +147,47 @@ is_device_removable()
 
 devs_not_in_media()
 {
-	# Mounted Partitions not in /media
-	# formated as device:mountpoint
+	# Mounted Partitions not in /media, formated as dev:pnt
 	mntpnt=$(mount |grep -v -e devpts -e tmpfs -e proc -e sysfs \
 		-e udev -e media -e none -e fuse |awk '{print $1":"$3}')
 
 	for i in ${mntpnt}; do
+		unset dev pnt dev_name fstype options
+		
 		dev=$(echo $i |cut -d ":" -f1)
-		uuid=$(/lib/udev/vol_id -u $dev)
-		[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
+		pnt=$(echo $i |cut -d ":" -f2)
+		
+		# clobber positional variables
+		[ "$#" != 0 ] && shift $#
+		
+		# assign positional parameters: ($1, $2, $3) = ($uuid, $mntpnt, $fstype)
+		set -- $(scanpartitions $scan_opts $dev 2>/dev/null)
+		
+		# 3 positional parameters were not assigned above, via scanpartitions
+		# we cannot handle this device, process next possible device
+		[ "$#" != 3 ] && continue
+		
+		dev_name="$1"
 
-		if test -z "$all_uuids" ; then
+		if test -z "$all_dev_names" ; then
 			# the first one
-			all_uuids="$uuid"
+			all_dev_names="$dev_name"
 			dev_done="$dev"
 		else
-			if echo "$all_uuids" | grep -q "$uuid" ; then
-				# it's a already used uuid so fallback to dev
-				uuid=$dev
+			if echo "$all_dev_names" | grep -q "$dev_name" ; then
+				# comment out device with duplicate uuid
+				dev_name="# $dev_name"
 			else 
 				# this is a new one so add it into the list
-				all_uuids="$all_uuids $uuid"
+				all_dev_names="$all_dev_names $dev_name"
 			fi
 			dev_done="$dev_done $dev"
 		fi
 
-		point=$(echo $i |cut -d ":" -f2)
-		fstype=$(/usr/sbin/scanpartitions $dev |awk '{print $3}')
+		fstype="$3"
 		options="defaults"
 
-		output $uuid $point $fstype $options $dump $pass
+		output $dev_name $pnt $fstype $options $dump $pass
 	done
 	out "\n"
 }
@@ -168,16 +196,38 @@ devs_not_in_media()
 
 devs_in_media()
 {
-	#now we scan all existent partitions
-	iocs=""
-	nls=""
+	# now we scan all existing partitions, as detected by scanpartitions
+	
+	unset iocs nls 
+	
 	if [ "$(locale charmap)" = "UTF-8" ]; then
 		iocs=",iocharset=utf8"
 		nls=",nls=utf8"
 	fi
 
-	while read dev point fstype relax; do
-		if echo "$dev_done" |grep -q "$dev" ; then
+	while read dev_name point fstype relax; do
+		
+		# determine actual device node
+		case "$dev_name" in
+			LABEL=*|UUID=*)
+				dev=$(findfs $dev_name)
+				;;
+			/dev/disk/by-*)
+				dev=$(readlink -f $dev_name)
+				;;
+			/dev/*)
+				dev="$dev_name"
+				;;
+			*)
+				# skip if not a UUID, LABEL or /dev/ node
+				continue
+				;;
+		esac
+		
+		# skip if we failed to locate a device node
+		test -b "$dev" || continue 
+
+		if echo "$dev_done" | grep -q "$dev" ; then
 			# skip this one ...
 			:
 		else
@@ -189,49 +239,44 @@ devs_in_media()
 
 				case "$fstype" in
 					ntfs)
-						uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
 						options="${options},ro,umask=000${nls}"
 						[ -n "$user" ]  && options="$options,uid=$user"
 						[ -n "$group" ] && options="$options,gid=$group"
 						;;
 					msdos)
-						uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
 						options="${options},umask=000,quiet${iocs}"
 						[ -n "$user" ]  && options="$options,uid=$user"
 						[ -n "$group" ] && options="$options,gid=$group"
 						;;
 					vfat)
-						uuid="/dev/disk/by-uuid/$(/lib/udev/vol_id -u $dev)"
 						options="${options},umask=000,shortname=mixed,quiet${iocs}"
 						[ -n "$user" ]  && options="$options,uid=$user"
 						[ -n "$group" ] && options="$options,gid=$group"
 						;;
 					swap)
-						uuid="$(/lib/udev/vol_id -u $dev)"
-						[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
 						options="sw"
 						;;
 					*)
-						uuid="$(/lib/udev/vol_id -u $dev)"
-						[ -z "$uuid" ] && uuid=$dev || uuid="UUID=$uuid"
 						;;
 				esac
 
-				if echo "$all_uuids" | grep -q "$uuid" ; then
+				if echo "$all_dev_names" | grep -q "$dev_name" ; then
 					# it's a already used uuid so fallback to dev
-					uuid=$dev
+					dev_name="# $dev_name"
 				else 
 					# this is a new one so add it into the list
-					all_uuids="$all_uuids $uuid"
+					all_dev_names="$all_dev_names $dev_name"
 				fi
+				
 				dev_done="$dev_done $dev"
+				
 				out "%s\n" "# added by sidux"
-				output $uuid $point $fstype $options $dump $pass
+				output $dev_name $point $fstype $options $dump $pass
 				out "\n"
 			fi
 		fi
 	done <<EOT
-$(/usr/sbin/scanpartitions)
+$(/usr/sbin/scanpartitions $scan_opts 2>/dev/null)
 EOT
 }
 
@@ -261,7 +306,7 @@ optical_devs()
 		DVD_RAM=$(cat $info |grep 'Can write DVD-RAM:' | sed 's/^.*://' | \
 				awk '{print $n}' n=$col  )
 	
-#		cdrom="/dev/cdrom$(($nr_cdroms - $i))"
+		#cdrom="/dev/cdrom$(($nr_cdroms - $i))"
 		point="/media/cdrom$(($nr_cdroms - $i))"
 
 		create_media_entry $point
@@ -302,7 +347,7 @@ floppy_devs()
 # preparation
 #--------------------------------------------------------------
 
-TEMP=`getopt -o hmwg:u: --long help,make-mountpoints,write-fstab,group:,user: \
+TEMP=`getopt -o df:hLmwg:u:U --long debug,ftsab:,help,labels,make-mountpoints,write-fstab,group:,user:,uuids \
      -n  "$(basename $0)" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -312,12 +357,28 @@ eval set -- "$TEMP"
 
 while true ; do
 	case "$1" in
+		-d|--debug)
+			set -x
+			shift
+			;;
+		-f|--fstab)
+			fstab="$2"
+			shift 2
+			;;
 		-h|--help)
-			usage;
+			usage
 			exit 0
 			;;
 		-w|--write-fstab) 
 			write_fstab="yes";
+			shift
+			;;
+		-L|--labels)
+			if [ "$scan_opts" ]; then
+				scan_opts="${scan_opts} --labels"
+			else
+				scan_opts="--labels"
+			fi
 			shift
 			;;
 		-m|--make-mountpoints)
@@ -332,6 +393,14 @@ while true ; do
 			user="$2"
 			shift 2
 			;;
+		-U|--uuids)
+			if [ "$scan_opts" ]; then
+				scan_opts="${scan_opts} --uuids"
+			else
+				scan_opts="--uuids"
+			fi
+			shift
+			;;
 		--) 
 			shift
 			break ;;
@@ -342,7 +411,9 @@ while true ; do
 	esac
 done
 
-test -e ${FSTAB} && rm -f ${FSTAB}
+if [ "$write_fstab" = "yes" ]; then
+	test -e ${fstab} && mv -f ${fstab} ${fstab}.old
+fi
 
 #--------------------------------------------------------------
 # do the main job

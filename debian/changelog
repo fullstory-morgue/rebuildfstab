@@ -1,8 +1,29 @@
 rebuildfstab (0.6.1) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Mar 2007 01:12:07 +0100
+  [ Kel Modderman ]
+  * Use dash in shebang line, this script is non-interactive. Depend on dash.
+  * Add myself to list of copyright holders.
+  * Rename all_uuids -> all_dev_names to remain uuid/label/name agnostic.
+  * Add default of scan_opts, which is passed to scanpartitions as options.
+  * Allow a conffile to override default scanpartitions options as called by
+    rebuildfstab, on hd-install we will most likely set this to default to
+    UUID's.
+  * Allow scanpartitions to calculate name and fstype of potential mount
+    points rather than calling udev directly. This provides extra efficiency
+    and safety, as scanpartitions should be allowed to change detection
+    behaviour in future without impacting on this fstab creation tool.
+  * Determine real device nodes in devs_in_media() if given LABEL, UUID or
+    /dev/disk/by-* symlink to process. Validate detected device node with
+    block device test.
+  * Add new -d|--debug, -L|--labels, -U|--uuids and -f|--fstab cli options.
+  * BUGFIX: do not unconditionally nuke /etc/fstab. Do not completely nuke it
+    at all. Make a backup of /etc/fstab to /etc/fstab.old if we intend to write
+    a new file.
+
+ -- Kel Modderman <kel@otaku42.de>  Mon, 12 Mar 2007 18:26:31 +1000
 
 rebuildfstab (0.6.0) unstable; urgency=low
 

@@ -1,0 +1,17 @@
+# defaults for rebuildfstab(8)
+#
+# Uncomment the following to have rebuildfstab create /etc/fstab
+# using UUID's for mount names when possible.
+#
+#DEFAULT_DEV_NAME_OPTIONS="--uuids"
+#
+# Uncomment the following to have rebuildfstab create /etc/fstab
+# using LABELS's for mount names when possible.
+#
+#DEFAULT_DEV_NAME_OPTIONS="--labels"
+#
+# Uncomment the following to have rebuildfstab create /etc/fstab
+# using LABELS's for mount names when possible, and attempt to use
+# UUID's when a valid LABEL is not possible.
+#
+#DEFAULT_DEV_NAME_OPTIONS="--labels --uuids"
