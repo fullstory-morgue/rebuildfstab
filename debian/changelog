@@ -1,8 +1,12 @@
 rebuildfstab (0.6.7) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 13 Mar 2007 16:31:10 +0100
+  [ Joaquim Boura ]
+  * use cat /proc/mounts instead of mount
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Tue, 13 Mar 2007 21:45:20 +0100
 
 rebuildfstab (0.6.6) unstable; urgency=low
 
