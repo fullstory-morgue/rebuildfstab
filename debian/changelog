@@ -1,7 +1,4 @@
-rebuildfstab (0.6.5) UNRELEASED; urgency=low
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+rebuildfstab (0.6.5) unstable; urgency=low
 
   [ Kel Modderman ]
   * Fixed flawed attempt to not print extra blank line.
