@@ -6,10 +6,12 @@ rebuildfstab (0.6.5) UNRELEASED; urgency=low
   [ Kel Modderman ]
   * Fixed flawed attempt to not print extra blank line.
   * Remove useless $ret variable.
-
+  * Style cleanup of scanpartitions.
+  
+  [ Joaquim Boura ]
   * Removed $to_file and TO_FILE. Using blanks in the usage instead of tabs
 
- -- Joaquim Boura <x-un-i@sidux.com>  Tue, 13 Mar 2007 01:02:32 +0100
+ -- Kel Modderman <kel@otaku42.de>  Tue, 13 Mar 2007 10:35:25 +1000
 
 rebuildfstab (0.6.4) unstable; urgency=low
 
