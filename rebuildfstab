@@ -37,6 +37,7 @@ create_mount_points="no"
 write_fstab="no"
 fstab="/etc/fstab"
 scan_opts=""
+quiet=""
 
 #--------------------------------------------------------------
 
@@ -58,6 +59,7 @@ usage()
 	echo "-u|--user <username>      user to create special mount options for"
 	echo "-f|--fstab <file>         target file to write output to"
 	echo "-a|--auto                 set auto mount option where applicable"
+	echo "-q|--quiet                surpress output when writing to file"
 	echo "-d|--debug                debug sh code execution"
 	echo ""
 }
@@ -185,7 +187,7 @@ devs_not_in_media()
 		
 		dev_name="$1"
 		
-		if [ "$write_fstab" = "yes" ]; then
+		if [ "$write_fstab" = "yes" ] && [ "$quiet" != "yes" ]; then
 			case "$pnt" in
 				'/')
 					if [ -f /proc/cmdline ] && \
@@ -360,8 +362,9 @@ floppy_devs()
 # preparation
 #--------------------------------------------------------------
 
-TEMP=`getopt -o adf:hLmwg:u:U --long auto,debug,ftsab:,help,labels,make-mountpoints,write-fstab,group:,user:,uuids \
-     -n  "$(basename $0)" -- "$@"`
+TEMP=`getopt -o adf:hLmqwg:u:U \
+	--long auto,debug,ftsab:,help,labels,make-mountpoints,write-fstab,quiet,group:,user:,uuids \
+	-n  "$(basename $0)" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
@@ -400,6 +403,10 @@ while true ; do
 			;;
 		-m|--make-mountpoints)
 			create_mount_points="yes"
+			shift
+			;;
+		-q|--quiet)
+			quiet="yes"
 			shift
 			;;
 		-g|--group)
@@ -445,5 +452,15 @@ devs_in_media
 optical_devs
 
 floppy_devs
+
+#--------------------------------------------------------------
+# display new fstab if written to file interactively
+#--------------------------------------------------------------
+
+if [ "$write_fstab" = "yes" ] && [ "$quiet" != "yes" ]; then
+	cat ${fstab}
+	echo ""
+	echo "${fstab} successfully rebuilt."
+fi
 
 exit 0
