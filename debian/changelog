@@ -1,8 +1,14 @@
 rebuildfstab (0.6.6) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 13 Mar 2007 02:43:43 +0100
+  [ Kel Modderman ]
+  * Add warn_about_root_and_bootloader sanity check, when writing a new fstab
+    and changing the identifier given to /, bad things may happend. Make some
+    noise in that case.
+
+ -- Kel Modderman <kel@otaku42.de>  Tue, 13 Mar 2007 15:46:19 +1000
 
 rebuildfstab (0.6.5) unstable; urgency=low
 

@@ -61,6 +61,36 @@ usage()
 	echo "-d|--debug                debug sh code execution"
 	echo ""
 }
+
+#--------------------------------------------------------------
+
+warn_about_root_and_bootloader()
+{
+	echo ""
+	echo "WARNING!    WARNING!    WARNING!    WARNING!    WARNING!   WARNING!"
+	echo ""
+	echo "You have written a new $fstab file and the root device is"
+	echo "identified by the following name:"
+	echo ""
+	echo "$1"
+	echo ""
+	echo "Your bootloader expects your root device to be named differently,"
+	echo "and if you were to reboot now without first adjusting your bootloader"
+	echo "the system may fail to boot."
+	echo
+	echo "Please make sure that your bootloader appends the following to"
+	echo "the list of kernel boot parameters:"
+	echo ""
+	echo "root=$dev_name"
+	echo ""
+	echo "If you use grub, make sure you adjust the \`kopts' line of"
+	echo "/boot/grub/menu.lst so that it uses the new root= device name and"
+	echo "execute update-grub before rebooting the system."
+	echo ""
+	echo "WARNING!    WARNING!    WARNING!    WARNING!    WARNING!   WARNING!"
+	echo ""
+}
+
 #--------------------------------------------------------------
 
 bad_arg_value()
@@ -153,6 +183,18 @@ devs_not_in_media()
 		[ "$#" != 3 ] && continue
 		
 		dev_name="$1"
+		
+		if [ "$write_fstab" = "yes" ]; then
+			case "$pnt" in
+				'/')
+					if [ -f /proc/cmdline ] && \
+						! grep -q -s "root=$dev_name" /proc/cmdline; then
+						warn_about_root_and_bootloader "$dev_name"
+					fi
+					;;
+			esac
+		fi
+					
 
 		if test -z "$all_dev_names" ; then
 			# the first one
