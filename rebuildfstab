@@ -49,16 +49,16 @@ usage()
 	echo "By default $(basename $0) prints fstab to stdout, and does not"
 	echo "(re)create mountpoints"
 	echo ""
-	echo "-h|--help			print this help"
-	echo "-w|--write-fstab		(re)create the fstab file"
-	echo "-m|--make-mountpoints	(re)create mountpoints in /media"
-	echo "-U|--uuids		use UUID's for mount names when possible"
-	echo "-L|--labels		use LABELS's for mount names when possible"
-	echo "-g|--group <groupname>	group to create special mount options for"
-	echo "-u|--user <username>	user to create special mount options for"
-	echo "-f|--fstab <file>		target file to write output to"
-	echo "-a|--auto			set auto mount option where applicable"
-	echo "-d|--debug		debug sh code execution"
+	echo "-h|--help                 print this help"
+	echo "-w|--write-fstab          (re)create the fstab file"
+	echo "-m|--make-mountpoints     (re)create mountpoints in /media"
+	echo "-U|--uuids                use UUID's for mount names when possible"
+	echo "-L|--labels               use LABELS's for mount names when possible"
+	echo "-g|--group <groupname>    group to create special mount options for"
+	echo "-u|--user <username>      user to create special mount options for"
+	echo "-f|--fstab <file>         target file to write output to"
+	echo "-a|--auto                 set auto mount option where applicable"
+	echo "-d|--debug                debug sh code execution"
 	echo ""
 }
 #--------------------------------------------------------------
@@ -95,11 +95,7 @@ create_media_entry()
 
 output()
 {
-	if [ "$to_file" = "true" ]; then
-		out "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6 >> ${TO_FILE}
-	else
-		out "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6
-	fi
+	out "%s\t%s\t%s\t%s\t%s %s\n" $1 $2 $3 $4 $5 $6
 }
 
 #--------------------------------------------------------------
@@ -108,7 +104,7 @@ start()
 {
 	out "%s\n" "# /etc/fstab: static file system information" 
 	out "%s\n" "#"
-	out "%s\t\t\t%s\t%s\t%s\t%s\n\n" "# <file system>" "<mount point>" "<type>" "<options>" "<dump> <pass>"
+	out "%s\t%s\t%s\t%s\t%s\n\n" "# <file system>" "<mount point>" "<type>" "<options>" "<dump> <pass>"
 }
 
 #--------------------------------------------------------------
