@@ -1,3 +1,9 @@
+rebuildfstab (0.6.7) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 13 Mar 2007 16:31:10 +0100
+
 rebuildfstab (0.6.6) unstable; urgency=low
 
   * Add warn_about_root_and_bootloader sanity check, when writing a new fstab
