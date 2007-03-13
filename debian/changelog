@@ -1,7 +1,4 @@
-rebuildfstab (0.6.7) UNRELEASED; urgency=low
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+rebuildfstab (0.6.7) unstable; urgency=low
 
   [ Joaquim Boura ]
   * use cat /proc/mounts instead of mount
