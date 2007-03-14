@@ -481,10 +481,6 @@ optical_devs
 
 floppy_devs
 
-#--------------------------------------------------------------
-# display new fstab if written to file interactively
-#--------------------------------------------------------------
-
 if [ "$write_fstab" = "yes" ] && [ "$quiet" != "yes" ]; then
 	echo ""
 	echo "${fstab} successfully rebuilt. Please double check it before rebooting."
