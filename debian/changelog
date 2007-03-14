@@ -5,8 +5,10 @@ rebuildfstab (0.6.8) UNRELEASED; urgency=low
 
   [ Kel Modderman ]
   * Filter udf and squashfs in scanpartitions.
+  * Add resolve_device_node() function to make device parsing of /proc/mounts
+    more robust. It can also be shared with devs_in_media() function.
 
- -- Kel Modderman <kel@otaku42.de>  Wed, 14 Mar 2007 08:28:00 +1000
+ -- Kel Modderman <kel@otaku42.de>  Wed, 14 Mar 2007 10:35:21 +1000
 
 rebuildfstab (0.6.7) unstable; urgency=low
 

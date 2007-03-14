@@ -160,19 +160,53 @@ is_device_removable()
 	# return 0 is the device is removable ...
 	return $?
 }
+
 #--------------------------------------------------------------
+# determine actual device node
+
+resolve_device_node()
+{
+	local dev
+
+	test -n "$1" || return 0
+
+	case "$1" in
+		LABEL=*|UUID=*)
+			dev=$(findfs $1)
+			;;
+		/dev/disk/by-*)
+			dev=$(readlink -f $1)
+			;;
+		/dev/*)
+			dev="$1"
+			;;
+		*)
+			# skip if not a UUID, LABEL or /dev/ node
+			return 0
+			;;
+	esac
+
+	test -b "$dev" && echo "$dev"
+}
+
+#--------------------------------------------------------------
+
 
 devs_not_in_media()
 {
 	# Mounted Partitions not in /media, formated as dev:pnt
-	mntpnt=$(cat /proc/mounts |grep -v -e devpts -e tmpfs -e proc \
-		-e /dev/loop -e sysfs -e root -e iso9660 -e udf -e usbfs \
-		-e udev -e media -e none -e fuse |awk '{print $1":"$2}')
+	mntpnt=$(awk '!/\/dev\/\.static\// { print $1":"$2 }' /proc/mounts)
 
 	for i in ${mntpnt}; do
 		unset dev pnt dev_name fstype options
 		
-		dev=$(echo $i |cut -d ":" -f1)
+		# resolve actual device node
+		dev=$(resolve_device_node $(echo $i |cut -d ":" -f1))
+		
+		# skip if we failed to locate a device node
+		test -n "$dev" || continue
+		
+		# mount point
 		pnt=$(echo $i |cut -d ":" -f2)
 		
 		# clobber positional variables
@@ -238,25 +272,11 @@ devs_in_media()
 
 	while read dev_name point fstype relax; do
 		
-		# determine actual device node
-		case "$dev_name" in
-			LABEL=*|UUID=*)
-				dev=$(findfs $dev_name)
-				;;
-			/dev/disk/by-*)
-				dev=$(readlink -f $dev_name)
-				;;
-			/dev/*)
-				dev="$dev_name"
-				;;
-			*)
-				# skip if not a UUID, LABEL or /dev/ node
-				continue
-				;;
-		esac
+		# resolve actual device node
+		dev=$(resolve_device_node "$dev_name")
 		
 		# skip if we failed to locate a device node
-		test -b "$dev" || continue 
+		test -n "$dev" || continue 
 
 		if echo "$dev_done" | grep -q "$dev" ; then
 			# skip this one ...
