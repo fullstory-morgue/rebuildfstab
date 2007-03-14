@@ -478,9 +478,9 @@ floppy_devs
 #--------------------------------------------------------------
 
 if [ "$write_fstab" = "yes" ] && [ "$quiet" != "yes" ]; then
-	cat ${fstab}
 	echo ""
-	echo "${fstab} successfully rebuilt."
+	echo "${fstab} successfully rebuilt. Please double check it before rebooting."
+	echo ""
 fi
 
 exit 0
