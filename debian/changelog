@@ -1,3 +1,9 @@
+rebuildfstab (0.6.9) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 14 Mar 2007 02:35:45 +0100
+
 rebuildfstab (0.6.8) unstable; urgency=low
 
   * Filter udf and squashfs in scanpartitions.
