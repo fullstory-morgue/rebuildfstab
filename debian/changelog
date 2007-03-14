@@ -1,3 +1,9 @@
+rebuildfstab (0.6.10) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 14 Mar 2007 12:49:07 +0100
+
 rebuildfstab (0.6.9) unstable; urgency=low
 
   * Overhaul is_device_removable() to not make assumptions about device names.
