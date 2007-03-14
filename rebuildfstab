@@ -116,9 +116,8 @@ out()
 
 create_media_entry()
 {
-	mypoint=$1
 	if [ "$create_mount_points" = "yes" ] ; then
-		[ -d "$mypoint" ] || mkdir -p "$mypoint" 2>/dev/null
+		[ -d "$1" ] || mkdir -p "$1" 2>/dev/null
 	fi
 }
 
@@ -144,9 +143,12 @@ start()
 
 print_outcdrom()
 {
+	local fstype options
+
 	fstype="udf,iso9660"
 	options="user,noauto"
- 	output $1 $2 $fstype $options 0 0
+ 	
+	output $1 $2 $fstype $options 0 0
 }
 
 #--------------------------------------------------------------
@@ -155,10 +157,16 @@ print_outcdrom()
 
 is_device_removable()
 {
-	curdev=$(echo $1 |cut -d / -f 3 |sed 's%\(...\).*$%\1%')
-	ls -l /sys/block/$curdev/device | grep -q -e usb -e fw 
-	# return 0 is the device is removable ...
-	return $?
+	local curdev
+	
+	curdev=$(echo ${1#/dev/} | sed -n 's%^\([a-zA-Z_-\.]\+\)[0-9]*$%\1%p')
+	
+	if test -L /sys/block/${curdev}/device; then
+		echo $(readlink -f /sys/block/${curdev}/device) | grep -q -e usb -e fw
+		return $?
+	fi
+
+	return 1
 }
 
 #--------------------------------------------------------------
@@ -362,7 +370,7 @@ floppy_devs()
 	dump=0
 	pass=0
 
-	for device in $(echo /sys/block/fd*); do
+	for device in /sys/block/fd*; do
 		if [ -d "${device}" ] ; then
 
 			devnr="$(echo $device | sed s/.*fd//g)"
