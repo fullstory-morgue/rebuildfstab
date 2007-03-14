@@ -480,10 +480,4 @@ optical_devs
 
 floppy_devs
 
-if [ "$write_fstab" = "yes" ] && [ "$quiet" != "yes" ]; then
-	echo ""
-	echo "${fstab} successfully rebuilt. Please double check it before rebooting."
-	echo ""
-fi
-
 exit 0
