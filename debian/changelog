@@ -1,9 +1,5 @@
-rebuildfstab (0.6.9) UNRELEASED; urgency=low
+rebuildfstab (0.6.9) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Kel Modderman ]
   * Overhaul is_device_removable() to not make assumptions about device names.
     Use readlink to resolve symlink name before testing if string usb or fw is
     in its path.
