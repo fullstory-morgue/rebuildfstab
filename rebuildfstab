@@ -166,19 +166,19 @@ is_device_removable()
 
 resolve_device_node()
 {
-	local dev
+	local node
 
 	test -n "$1" || return 0
 
 	case "$1" in
 		LABEL=*|UUID=*)
-			dev=$(findfs $1)
+			node=$(findfs $1)
 			;;
 		/dev/disk/by-*)
-			dev=$(readlink -f $1)
+			node=$(readlink -f $1)
 			;;
 		/dev/*)
-			dev="$1"
+			node="$1"
 			;;
 		*)
 			# skip if not a UUID, LABEL or /dev/ node
@@ -186,7 +186,7 @@ resolve_device_node()
 			;;
 	esac
 
-	test -b "$dev" && echo "$dev"
+	test -b "$node" && echo "$node"
 }
 
 #--------------------------------------------------------------
