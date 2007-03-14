@@ -199,7 +199,6 @@ resolve_device_node()
 
 #--------------------------------------------------------------
 
-
 devs_not_in_media()
 {
 	# Mounted Partitions not in /media, formated as dev:pnt
