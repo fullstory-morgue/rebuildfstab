@@ -1,3 +1,9 @@
+rebuildfstab (0.6.11) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 19 Mar 2007 03:04:49 +0100
+
 rebuildfstab (0.6.10) unstable; urgency=low
 
   * Filter removable devices, that are currently mounted in /media/* from
