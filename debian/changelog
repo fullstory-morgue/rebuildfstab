@@ -6,8 +6,10 @@ rebuildfstab (0.6.10) UNRELEASED; urgency=low
   [ Kel Modderman ]
   * Filter removable devices, that are currently mounted in /media/* from
     devs_not_in_media().
+  * Relax sed regexp used in is_device_removable(), only strip trailing device
+    number.
 
- -- Kel Modderman <kel@otaku42.de>  Thu, 15 Mar 2007 10:04:38 +1000
+ -- Kel Modderman <kel@otaku42.de>  Mon, 19 Mar 2007 11:53:43 +1000
 
 rebuildfstab (0.6.9) unstable; urgency=low
 

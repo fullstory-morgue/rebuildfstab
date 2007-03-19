@@ -159,7 +159,7 @@ is_device_removable()
 {
 	local curdev
 	
-	curdev=$(echo ${1#/dev/} | sed -n 's%^\([a-zA-Z_-\.]\+\)[0-9]*$%\1%p')
+	curdev=$(echo ${1#/dev/} | sed 's/[0-9]*$//')
 	
 	if test -L /sys/block/${curdev}/device; then
 		echo $(readlink -f /sys/block/${curdev}/device) | grep -q -e usb -e fw
