@@ -237,11 +237,7 @@ devs_not_in_media()
 				fi
 				;;
 			'/media/'*)
-				# if volume is currently mounted in /media and has been
-				# identified as removable, skip it
-				if is_device_removable "$dev"; then
-					continue
-				fi
+				continue
 				;;
 		esac
 					
