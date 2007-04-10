@@ -1,3 +1,9 @@
+rebuildfstab (0.6.12) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 10 Apr 2007 02:27:06 +0200
+
 rebuildfstab (0.6.11) unstable; urgency=low
 
   * devices already mounted in /media were incorrectly handled, Thks to
