@@ -4,13 +4,13 @@ rebuildfstab (0.6.12) UNRELEASED; urgency=low
   * NOT RELEASED YET
 
   [ Kel Modderman ]
-  * Inhibit devs_not_in_media() from making an fstab entry for ant partition
+  * Inhibit devs_not_in_media() from making an fstab entry for any partition
     mounted on special mount name "/isosrc", fromiso uses that mountpoint.
     Thanks to slam for deleting the offending fstab file before showing it.
   * All partitions handled by devs_in_media() will be dump=0 pass=0, except
     for when fstype=swap.
 
- -- Kel Modderman <kel@otaku42.de>  Wed, 11 Apr 2007 23:46:26 +1000
+ -- Kel Modderman <kel@otaku42.de>  Thu, 12 Apr 2007 00:11:54 +1000
 
 rebuildfstab (0.6.11) unstable; urgency=low
 
