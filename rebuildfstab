@@ -31,8 +31,6 @@
 
 all_dev_names=""
 dev_done=""
-dump="0"
-pass="1"
 create_mount_points="no"
 write_fstab="no"
 fstab="/etc/fstab"
@@ -204,6 +202,9 @@ devs_not_in_media()
 	# Mounted Partitions not in /media, formated as dev:pnt
 	mntpnt=$(awk '$2 !~ /\/dev\/\.static\// { print $1":"$2 }' /proc/mounts)
 
+	dump=0
+	pass=1
+
 	for i in ${mntpnt}; do
 		unset dev pnt dev_name fstype options
 		
@@ -280,6 +281,9 @@ devs_in_media()
 
 	while read dev_name point fstype relax; do
 		
+		dump=0
+		pass=0
+		
 		# resolve actual device node
 		dev=$(resolve_device_node "$dev_name")
 		
@@ -318,6 +322,7 @@ devs_in_media()
 						;;
 					swap)
 						options="sw"
+						pass=1
 						;;
 					*)
 						;;
