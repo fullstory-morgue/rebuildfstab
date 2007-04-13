@@ -1,9 +1,5 @@
-rebuildfstab (0.6.12) UNRELEASED; urgency=low
+rebuildfstab (0.6.12) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Kel Modderman ]
   * Inhibit devs_not_in_media() from making an fstab entry for any partition
     mounted on special mount name "/isosrc", fromiso uses that mountpoint.
     Thanks to slam for deleting the offending fstab file before showing it.
