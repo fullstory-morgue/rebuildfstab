@@ -1,3 +1,9 @@
+rebuildfstab (0.6.13) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 14 Apr 2007 01:39:05 +0200
+
 rebuildfstab (0.6.12) unstable; urgency=low
 
   * Inhibit devs_not_in_media() from making an fstab entry for any partition
