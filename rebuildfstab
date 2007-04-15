@@ -168,6 +168,30 @@ is_device_removable()
 }
 
 #--------------------------------------------------------------
+# take care of  all_dev_names list
+# side effect on duplicates dev_name var is changed
+
+handle_device_list()
+{
+	local i
+	for i in $all_dev_names; do 
+		if [ "$i" = "$dev_name" ]; then 
+			found_it=true 
+			break
+		else 
+			found_it=false
+		fi
+	done
+	if [ found_it = "true" ]; then
+		# fallback to dev
+		dev_name="#$dev_name"
+	else
+		# this is a new one so add it into the list
+		all_dev_names="$all_dev_names $dev_name"
+	fi
+}
+
+#--------------------------------------------------------------
 # determine actual device node
 
 resolve_device_node()
@@ -247,13 +271,8 @@ devs_not_in_media()
 			all_dev_names="$dev_name"
 			dev_done="$dev"
 		else
-			if echo "$all_dev_names" | grep -q "$dev_name" ; then
-				# comment out device with duplicate uuid
-				dev_name="#$dev_name"
-			else 
-				# this is a new one so add it into the list
-				all_dev_names="$all_dev_names $dev_name"
-			fi
+			# the others
+			handle_device_list
 			dev_done="$dev_done $dev"
 		fi
 
@@ -328,14 +347,7 @@ devs_in_media()
 						;;
 				esac
 
-				if echo "$all_dev_names" | grep -q "$dev_name" ; then
-					# it's a already used uuid so fallback to dev
-					dev_name="#$dev_name"
-				else 
-					# this is a new one so add it into the list
-					all_dev_names="$all_dev_names $dev_name"
-				fi
-				
+				handle_device_list
 				dev_done="$dev_done $dev"
 				
 				out "%s\n" "# added by sidux"

@@ -1,8 +1,12 @@
 rebuildfstab (0.6.13) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 14 Apr 2007 01:39:05 +0200
+  [ Joaquim Boura ]
+  * Test for already worked out devices tightened.
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Sun, 15 Apr 2007 18:40:18 +0200
 
 rebuildfstab (0.6.12) unstable; urgency=low
 
