@@ -279,6 +279,7 @@ devs_not_in_media()
 		fstype="$3"
 		options="defaults"
 
+		out "%s\t%s\n" "# added by sidux" $dev
 		output $dev_name $pnt $fstype $options $dump $pass
 	done
 	
@@ -350,7 +351,7 @@ devs_in_media()
 				handle_device_list
 				dev_done="$dev_done $dev"
 				
-				out "%s\n" "# added by sidux"
+				out "%s\t%s\n" "# added by sidux" $dev
 				output $dev_name $point $fstype $options $dump $pass
 				out "\n"
 			fi
