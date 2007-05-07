@@ -53,8 +53,6 @@ usage()
 	echo "-m|--make-mountpoints     (re)create mountpoints in /media"
 	echo "-U|--uuids                use UUID's for mount names when possible"
 	echo "-L|--labels               use LABELS's for mount names when possible"
-	echo "-g|--group <groupname>    group to create special mount options for"
-	echo "-u|--user <username>      user to create special mount options for"
 	echo "-f|--fstab <file>         target file to write output to"
 	echo "-a|--auto                 set auto mount option where applicable"
 	echo "-q|--quiet                surpress output when writing to file"
@@ -326,19 +324,13 @@ devs_in_media()
 
 				case "$fstype" in
 					ntfs)
-						options="${options},ro,umask=000${nls}"
-						[ -n "$user" ]  && options="$options,uid=$user"
-						[ -n "$group" ] && options="$options,gid=$group"
+						options="${options},ro,dmask=0022,fmask=0133,${nls}"
 						;;
 					msdos)
-						options="${options},umask=000,quiet${iocs}"
-						[ -n "$user" ]  && options="$options,uid=$user"
-						[ -n "$group" ] && options="$options,gid=$group"
+						options="${options},quiet,dmask=0022,fmask=0133,${iocs}"
 						;;
 					vfat)
-						options="${options},umask=000,shortname=mixed,quiet${iocs}"
-						[ -n "$user" ]  && options="$options,uid=$user"
-						[ -n "$group" ] && options="$options,gid=$group"
+						options="${options},shortname=mixed,quiet,dmask=0022,fmask=0133,${iocs}"
 						;;
 					swap)
 						options="sw"
@@ -408,8 +400,8 @@ floppy_devs()
 # preparation
 #--------------------------------------------------------------
 
-TEMP=`getopt -o adf:hLmqwg:u:U \
-	--long auto,debug,ftsab:,help,labels,make-mountpoints,write-fstab,quiet,group:,user:,uuids \
+TEMP=`getopt -o adf:hLmqwU \
+	--long auto,debug,ftsab:,help,labels,make-mountpoints,write-fstab,quiet,,uuids \
 	-n  "$(basename $0)" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -454,14 +446,6 @@ while true ; do
 		-q|--quiet)
 			quiet="yes"
 			shift
-			;;
-		-g|--group)
-			group="$2"
-			shift 2
-			;;
-		-u|--user)
-			user="$2"
-			shift 2
 			;;
 		-U|--uuids)
 			if [ "$scan_opts" ]; then
