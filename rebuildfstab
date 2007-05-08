@@ -293,14 +293,14 @@ devs_in_media()
 	unset iocs nls 
 	
 	if [ "$(locale charmap)" = "UTF-8" ]; then
-		iocs=",iocharset=utf8"
-		nls=",nls=utf8"
+		iocs="iocharset=utf8"
+		nls="nls=utf8"
 	fi
 
 	while read dev_name point fstype relax; do
 		
 		dump=0
-		pass=0
+		pass=1
 		
 		# resolve actual device node
 		dev=$(resolve_device_node "$dev_name")
@@ -325,16 +325,18 @@ devs_in_media()
 				case "$fstype" in
 					ntfs)
 						options="${options},ro,dmask=0022,fmask=0133,${nls}"
+						pass=0
 						;;
 					msdos)
 						options="${options},quiet,dmask=0022,fmask=0133,${iocs}"
+						pass=0
 						;;
 					vfat)
 						options="${options},shortname=mixed,quiet,dmask=0022,fmask=0133,${iocs}"
+						pass=0
 						;;
 					swap)
 						options="sw"
-						pass=1
 						;;
 					*)
 						;;
