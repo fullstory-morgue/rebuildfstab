@@ -1,3 +1,9 @@
+rebuildfstab (0.6.16) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 08 May 2007 11:56:01 +0200
+
 rebuildfstab (0.6.15) unstable; urgency=low
 
   * changed permissions for "dos" filesystems. Use ro,dmask=0022,fmask=0133
