@@ -1,9 +1,5 @@
-rebuildfstab (0.6.15) UNRELEASED; urgency=low
+rebuildfstab (0.6.15) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Joaquim Boura ]
   * changed permissions for "dos" filesystems. Use ro,dmask=0022,fmask=0133
   * set fsck pass on boot. 
 
