@@ -1,4 +1,4 @@
-rebuildfstab (0.6.16) UNRELEASED; urgency=low
+rebuildfstab (0.6.16) unstable; urgency=low
 
   * Exclude /fll/* from fstab.
 
