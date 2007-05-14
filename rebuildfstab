@@ -259,7 +259,7 @@ devs_not_in_media()
 					warn_about_root_and_bootloader "$dev_name"
 				fi
 				;;
-			'/media/'*|'/isosrc')
+			'/media/'*|'/fll'*)
 				continue
 				;;
 		esac
