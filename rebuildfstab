@@ -328,11 +328,11 @@ devs_in_media()
 						pass=0
 						;;
 					msdos)
-						options="${options},quiet,dmask=0022,fmask=0133,${iocs}"
+						options="${options},quiet,umask=000,${iocs}"
 						pass=0
 						;;
 					vfat)
-						options="${options},shortname=mixed,quiet,dmask=0022,fmask=0133,${iocs}"
+						options="${options},shortname=mixed,quiet,umask=000,${iocs}"
 						pass=0
 						;;
 					swap)

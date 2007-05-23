@@ -1,8 +1,12 @@
 rebuildfstab (0.6.17) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 14 May 2007 23:21:48 +0200
+  [ Joaquim Boura ]
+  * we can write without problems into vfat/msdos filesystems
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Wed, 23 May 2007 22:13:33 +0200
 
 rebuildfstab (0.6.16) unstable; urgency=low
 
