@@ -1,3 +1,9 @@
+rebuildfstab (0.6.19) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 27 May 2007 10:44:27 +0200
+
 rebuildfstab (0.6.18) unstable; urgency=low
 
   * Add new function comment_device() that will add label information to
