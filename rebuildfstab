@@ -219,6 +219,29 @@ resolve_device_node()
 
 #--------------------------------------------------------------
 
+comment_device()
+{
+	local comment="$1"
+	
+	case "$scan_opts" in
+		*labels*)
+			# no need to display label in comment too
+			;;
+		*)
+			label=$(/lib/udev/vol_id -l $1 2>/dev/null)
+			if [ "$label" ]; then
+				comment="$1 LABEL=$label"
+			else
+				comment="$1 (no label)"
+			fi
+			;;
+	esac
+
+	echo "$comment"
+}
+
+#--------------------------------------------------------------
+
 devs_not_in_media()
 {
 	# Mounted Partitions not in /media, formated as dev:pnt
@@ -277,7 +300,7 @@ devs_not_in_media()
 		fstype="$3"
 		options="defaults"
 
-		out "%s\t%s\n" "# added by sidux" $dev
+		out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
 		output $dev_name $pnt $fstype $options $dump $pass
 	done
 	
@@ -344,8 +367,8 @@ devs_in_media()
 
 				handle_device_list
 				dev_done="$dev_done $dev"
-				
-				out "%s\t%s\n" "# added by sidux" $dev
+
+				out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
 				output $dev_name $point $fstype $options $dump $pass
 				out "\n"
 			fi
@@ -367,7 +390,7 @@ optical_devs()
 
 		create_media_entry $point
 
-		out "%s\n" "# added by sidux"
+		out "%s\n" "# added by rebuildfstab"
 		print_outcdrom $dev $point
 		out "\n"
 	done
@@ -391,7 +414,7 @@ floppy_devs()
 
 			create_media_entry $point
 
-			out "%s\n" "# added by sidux"
+			out "%s\n" "# added by rebuildfstab"
 			output $dev $point $fstype $options $dump $pass
 			out "\n"
 		fi

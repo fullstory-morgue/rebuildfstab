@@ -1,8 +1,9 @@
 rebuildfstab (0.6.18) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * Add new function comment_device() that will add label information to
+    device entry comment.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 24 May 2007 00:32:43 +0200
+ -- Kel Modderman <kel@otaku42.de>  Sun, 27 May 2007 10:11:19 +1000
 
 rebuildfstab (0.6.17) unstable; urgency=low
 
