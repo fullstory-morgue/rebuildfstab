@@ -58,6 +58,13 @@ usage()
 	echo "-q|--quiet                surpress output when writing to file"
 	echo "-d|--debug                debug sh code execution"
 	echo ""
+	echo "rebuildfstab is intended for initial creation of /etc/fstab in situations"
+	echo "similar to that of a live linux demonstrtation cd where the fstab file"
+	echo "must be generated from scratch. It is not intended for ongoing maintenance"
+	echo "of the fstab file on standard hard disk installations."
+	echo ""
+	echo " Use it at your own risk, it comes without any warranty."
+	echo ""
 }
 
 #--------------------------------------------------------------

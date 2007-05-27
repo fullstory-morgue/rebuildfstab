@@ -12,8 +12,10 @@ rebuildfstab (0.6.18) UNRELEASED; urgency=low
     human readable labels could lead to unexpected results.
   * Depend on gawk, and modify shebang line of scanpartitions accordingly.
     mawk does not accept command line options very well.
+  * Make it very clear in rebuildfstab.8 and help information that the utility
+    is not intended for ongoing maintenance of /etc/fstab.
 
- -- Kel Modderman <kel@otaku42.de>  Sun, 27 May 2007 10:35:57 +1000
+ -- Kel Modderman <kel@otaku42.de>  Sun, 27 May 2007 11:48:09 +1000
 
 rebuildfstab (0.6.17) unstable; urgency=low
 

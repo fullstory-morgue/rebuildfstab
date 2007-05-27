@@ -10,6 +10,12 @@ and create mountpoints.
 \fBscanpartitions\fR reads \fI/proc/partitions\fR and tries to guess the
 filesystem on each partition for automatic \fI/etc/fstab\fR generation.
 .PP
+\fBrebuildfstab\fR is intended for initial creation of \fI/etc/fstab\fR in
+situations similar to that of a live linux demonstrtation cd where the fstab
+file must be generated from scratch. It is not intended for ongoing maintenance
+of the fstab file on standard hard disk installations. Use it at your own risk,
+it comes without any warranty.
+.PP
 .SH OPTIONS
 .TP
 \fB\-h|\-\-help\fR
