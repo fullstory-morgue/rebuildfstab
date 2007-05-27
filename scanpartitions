@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 #
 # Copyright (C) 2007 Kel Modderman <kel@otaku42.de>
 #		     Michiel de Boer <locsmif@kanotix.com>
@@ -35,7 +35,9 @@ function parse_vol_id(name)
 	mntdev = mntpnt = ""
 
 	# ensure name has /dev/ stripped from it, and dev is prefixed with /dev/
-	sub(/^\/dev\//, "", name); dev = "/dev/" name
+	# looks stupid, but allows for both sdaX and /dev/sdaX as device arguments
+	sub(/^\/dev\//, "", name)
+	dev = "/dev/" name
 
 	# test block device node for validity
 	if (blockdev_exists(dev) != 0 || name ~ /^(ram|cloop|loop).+/)
@@ -44,28 +46,32 @@ function parse_vol_id(name)
 	# run vol_id on dev, discard stderr
 	cmd = "/lib/udev/vol_id " dev " 2>/dev/null"
 	# form assoc. array `id'
-	while (cmd | getline) {
+	while ((cmd | getline) > 0) {
 		# indices: label label_safe type usage uuid version
-		split($0, vol_id, "="); sub(/^ID_FS_/, "", vol_id[1])
+		# split indice=value into array named vol_id
+		split($0, vol_id, "=")
+		sub(/^ID_FS_/, "", vol_id[1])
+		if (debug)
+			printf("debug: id[%s] = %s\n", tolower(vol_id[1]), vol_id[2])
 		id[tolower(vol_id[1])] = vol_id[2]
 	}
 
 	# return if we cannot handle fs
-	if (id["usage"] !~ /(filesystem|other)/ || !id["type"] || \
+	if (id["usage"] !~ /(filesystem|other)/ || ! id["type"] || \
 		id["type"] ~ /(unknown|iso9660|udf|squashfs)/)
 		return 0
 
 	# use metainfo for linux native filesystems
 	if (id["type"] ~ /^(ext[234]|jfs|reiser|swap|xfs)/) {
-		if (labels && id["label"])
-			mntdev = "LABEL=" id["label"]
+		if (labels && id["label_safe"])
+			mntdev = "LABEL=" id["label_safe"]
 		else if (uuids && id["uuid"])
 			mntdev = "UUID=" id["uuid"]
 	}
-	# workaround for non-perfect non-native fs support
+	# workaround for non-perfect non-native fs support: use long device node symlink
 	else {
-		if (labels && id["label"])
-			mntdev = "/dev/disk/by-label/" id["label"]
+		if (labels && id["label_safe"])
+			mntdev = "/dev/disk/by-label/" id["label_safe"]
 		else if	(uuids && id["uuid"])
 			mntdev = "/dev/disk/by-uuid/" id["uuid"]
 		
@@ -75,7 +81,7 @@ function parse_vol_id(name)
 	}
 	
 	# fall back to raw device name if uuid/label not found or wanted
-	if (!mntdev)
+	if (! mntdev)
 		mntdev = dev
 
 	# no mount point for swap
@@ -103,7 +109,7 @@ function parse_all() {
 }
 
 function usage() {
-	print("Usage: scanpartitions [-l|--labels] [-u|--uuids] [device]")
+	print("Usage: scanpartitions [-l|--labels] [-u|--uuids] [-d|--debug] [device]")
 	exit(0)
 }
 
@@ -112,9 +118,11 @@ BEGIN {
 		# test devices given as arguments
 		for (i = 1; i < ARGC; i++) {
 			if (ARGV[i] ~ /^(-u|--uuids)/)
-				uuids=1
+				uuids = 1
 			else if	(ARGV[i] ~ /^(-l|--labels)/)
-				labels=1
+				labels = 1
+			else if (ARGV[i] ~ /^(-d|--debug)/)
+				debug = 1
 			else if	(ARGV[i] ~ /^-/)
 				usage()
 			else

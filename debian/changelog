@@ -2,8 +2,18 @@ rebuildfstab (0.6.18) UNRELEASED; urgency=low
 
   * Add new function comment_device() that will add label information to
     device entry comment.
+  * Add extra comments to scanpartitions.
+  * Format adjustments of scanpartitions, use new lines for each statement
+    instead of seperating with delimiter. Put space between ! and variable.
+  * Fix possible infinite loop with getline, check that return value is > 0.
+  * Add debug command line option to scanpartitions to see what variables are
+    assigned during vol_id invocation.
+  * Bugfix: use LABEL_SAFE vol_id attribute and not LABEL. Using unsanitised
+    human readable labels could lead to unexpected results.
+  * Depend on gawk, and modify shebang line of scanpartitions accordingly.
+    mawk does not accept command line options very well.
 
- -- Kel Modderman <kel@otaku42.de>  Sun, 27 May 2007 10:11:19 +1000
+ -- Kel Modderman <kel@otaku42.de>  Sun, 27 May 2007 10:35:57 +1000
 
 rebuildfstab (0.6.17) unstable; urgency=low
 

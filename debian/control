@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 
 Package: rebuildfstab
 Architecture: all
-Depends: dash, procps, su-me, udev
+Depends: dash, gawk, procps, su-me, udev
 Conflicts: scanpartitions
 Description: fstab and mountpoint generator
  rebuildfstab uses scanpartitions to rebuild all harddisk entries
