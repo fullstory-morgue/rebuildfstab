@@ -1,4 +1,4 @@
-rebuildfstab (0.6.18) UNRELEASED; urgency=low
+rebuildfstab (0.6.18) unstable; urgency=low
 
   * Add new function comment_device() that will add label information to
     device entry comment.
