@@ -280,6 +280,8 @@ devs_not_in_media()
 		[ "$#" != 3 ] && continue
 		
 		dev_name="$1"
+		fstype="$3"
+		options="defaults"
 		
 		case "$pnt" in
 			'/')
@@ -288,6 +290,7 @@ devs_not_in_media()
 					! grep -q -s "root=$dev_name" /proc/cmdline; then
 					warn_about_root_and_bootloader "$dev_name"
 				fi
+				options="defaults,errors=remount-ro"
 				;;
 			'/media/'*|'/fll'*)
 				continue
@@ -303,9 +306,6 @@ devs_not_in_media()
 			handle_device_list
 			dev_done="$dev_done $dev"
 		fi
-
-		fstype="$3"
-		options="defaults"
 
 		out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
 		output $dev_name $pnt $fstype $options $dump $pass

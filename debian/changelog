@@ -1,8 +1,8 @@
 rebuildfstab (0.6.19) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * Add errors=remount-ro to mount options for /.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 27 May 2007 10:44:27 +0200
+ -- Kel Modderman <kel@otaku42.de>  Tue, 29 May 2007 12:34:55 +1000
 
 rebuildfstab (0.6.18) unstable; urgency=low
 
