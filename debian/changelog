@@ -1,4 +1,4 @@
-rebuildfstab (0.6.19) UNRELEASED; urgency=low
+rebuildfstab (0.6.19) unstable; urgency=low
 
   * Add errors=remount-ro to mount options for /.
   * Change pass number for all mounts as per fstab(5):
