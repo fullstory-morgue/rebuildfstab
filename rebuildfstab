@@ -255,10 +255,12 @@ devs_not_in_media()
 	mntpnt=$(awk '$2 !~ /\/dev\/\.static\// { print $1":"$2 }' /proc/mounts)
 
 	dump=0
-	pass=1
 
 	for i in ${mntpnt}; do
 		unset dev pnt dev_name fstype options
+
+		# default passno, overriden for /
+		pass=2
 		
 		# resolve actual device node
 		dev=$(resolve_device_node $(echo $i |cut -d ":" -f1))
@@ -285,6 +287,8 @@ devs_not_in_media()
 		
 		case "$pnt" in
 			'/')
+				# passno is always 1 for /
+				pass=1
 				# could lead to problems for curious users
 				if [ "$write_fstab" = "yes" ] && [ "$quiet" != "yes" ] && \
 					! grep -q -s "root=$dev_name" /proc/cmdline; then
@@ -330,7 +334,7 @@ devs_in_media()
 	while read dev_name point fstype relax; do
 		
 		dump=0
-		pass=1
+		pass=2
 		
 		# resolve actual device node
 		dev=$(resolve_device_node "$dev_name")

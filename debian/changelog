@@ -1,8 +1,13 @@
 rebuildfstab (0.6.19) UNRELEASED; urgency=low
 
   * Add errors=remount-ro to mount options for /.
+  * Change pass number for all mounts as per fstab(5):
+    "The sixth field, (fs_passno), is used by the fsck(8) program to determine
+     the order in which filesystem checks are done at reboot time. The root
+     filesystem should be specified with a fs_passno of 1, and other
+     filesystems should have a fs_passno of  2."
 
- -- Kel Modderman <kel@otaku42.de>  Tue, 29 May 2007 12:34:55 +1000
+ -- Kel Modderman <kel@otaku42.de>  Tue, 05 Jun 2007 00:05:56 +1000
 
 rebuildfstab (0.6.18) unstable; urgency=low
 
