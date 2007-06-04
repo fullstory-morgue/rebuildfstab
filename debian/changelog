@@ -1,3 +1,9 @@
+rebuildfstab (0.6.20) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 04 Jun 2007 17:58:45 +0200
+
 rebuildfstab (0.6.19) unstable; urgency=low
 
   * Add errors=remount-ro to mount options for /.
