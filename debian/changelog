@@ -1,4 +1,4 @@
-rebuildfstab (0.6.20) UNRELEASED; urgency=low
+rebuildfstab (0.6.20) unstable; urgency=low
 
   * Add -n|--no-swap option to rebuildfstab.
 
