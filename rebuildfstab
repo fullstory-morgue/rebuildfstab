@@ -35,6 +35,7 @@ create_mount_points="no"
 write_fstab="no"
 fstab="/etc/fstab"
 scan_opts=""
+no_swap=""
 quiet=""
 
 #--------------------------------------------------------------
@@ -51,6 +52,7 @@ usage()
 	echo "-h|--help                 print this help"
 	echo "-w|--write-fstab          (re)create the fstab file"
 	echo "-m|--make-mountpoints     (re)create mountpoints in /media"
+	echo "-n|--no-swap              don't write fstab entry for swap partitions"
 	echo "-U|--uuids                use UUID's for mount names when possible"
 	echo "-L|--labels               use LABELS's for mount names when possible"
 	echo "-f|--fstab <file>         target file to write output to"
@@ -311,6 +313,10 @@ devs_not_in_media()
 			dev_done="$dev_done $dev"
 		fi
 
+		if [ "$fstype" = "swap" ] && [ "$no_swap" = "yes" ]; then
+			continue
+		fi
+
 		out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
 		output $dev_name $pnt $fstype $options $dump $pass
 	done
@@ -379,6 +385,10 @@ devs_in_media()
 				handle_device_list
 				dev_done="$dev_done $dev"
 
+				if [ "$fstype" = "swap" ] && [ "$no_swap" = "yes" ]; then
+					continue
+				fi
+
 				out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
 				output $dev_name $point $fstype $options $dump $pass
 				out "\n"
@@ -436,8 +446,8 @@ floppy_devs()
 # preparation
 #--------------------------------------------------------------
 
-TEMP=`getopt -o adf:hLmqwU \
-	--long auto,debug,ftsab:,help,labels,make-mountpoints,write-fstab,quiet,,uuids \
+TEMP=`getopt -o adf:hLmnqwU \
+	--long auto,debug,ftsab:,help,labels,make-mountpoints,no-swap,write-fstab,quiet,,uuids \
 	-n  "$(basename $0)" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -477,6 +487,10 @@ while true ; do
 			;;
 		-m|--make-mountpoints)
 			create_mount_points="yes"
+			shift
+			;;
+		-n|--no-swap)
+			no_swap="yes"
 			shift
 			;;
 		-q|--quiet)
