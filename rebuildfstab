@@ -447,7 +447,7 @@ floppy_devs()
 #--------------------------------------------------------------
 
 TEMP=`getopt -o adf:hLmnqwU \
-	--long auto,debug,fstab:,help,labels,make-mountpoints,no-swap,write-fstab,quiet,,uuids \
+	--long auto,debug,fstab:,help,labels,make-mountpoints,no-swap,write-fstab,quiet,uuids \
 	-n  "$(basename $0)" -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
