@@ -1,3 +1,9 @@
+rebuildfstab (0.6.21) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 14 Jun 2007 13:28:57 +0200
+
 rebuildfstab (0.6.20) unstable; urgency=low
 
   * Add -n|--no-swap option to rebuildfstab.
