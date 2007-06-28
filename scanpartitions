@@ -85,7 +85,12 @@ function parse_vol_id(name)
 		mntdev = dev
 
 	# no mount point for swap
-	mntpnt = (id["type"] == "swap") ? "none" : "/media/" name
+	if (id["type"] == "swap")
+		mntpnt = "none"
+	else if (labels && id["label_safe"])
+		mntpnt = "/media/" id["label_safe"]
+	else
+		mntpnt = "/media/" name
 	
 	# print something useful for a fstab helper program
 	print(mntdev, mntpnt, id["type"])
