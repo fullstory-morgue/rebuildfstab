@@ -21,9 +21,41 @@
 # On Debian GNU/Linux systems, the text of the GPL license can be
 # found in /usr/share/common-licenses/GPL.
 
-function blockdev_exists(node,    retval)
+function blockdev_exists(node,    found_node, retval)
 {
-	retval = system("test -b \"" node  "\"")
+	# returns actual device node when successful
+	retval = 0
+
+	if (debug)
+		printf("blockdev_exists: default retval = %s\n", retval)
+	
+	if (node ~ /^(LABEL|UUID)=.+/) {
+		cmd = "findfs " node
+		if((cmd | getline found_node) > 0) {
+			if (debug)
+				printf("findfs: %s -> %s\n", node, found_node)
+			node = found_node
+		}
+		else
+			return retval
+	}
+	else if (node ~ /^\/dev\/disk\/by-(label|uuid)\/.+/) {
+		cmd = "readlink -f " node
+		if((cmd | getline found_node) > 0) {
+			if (debug)
+				printf("readlink: %s -> %s\n", node, found_node)
+			node = found_node
+		}
+		else
+			return retval
+	}
+	
+	if (system("test -b \"" node  "\"") == 0)
+		retval = node
+	
+	if (debug)
+		printf("blockdev_exists: final retval = %s\n", retval)
+	
 	return retval
 }
 
@@ -39,9 +71,15 @@ function parse_vol_id(name)
 	sub(/^\/dev\//, "", name)
 	dev = "/dev/" name
 
+	if (debug)
+		printf("parse_vol_id: %s\n", dev)
+
 	# test block device node for validity
-	if (blockdev_exists(dev) != 0 || name ~ /^(ram|cloop|loop)[0-9]+/)
+	if (blockdev_exists(dev) != dev || name ~ /^(ram|cloop|loop)[0-9]+/) {
+		if (debug)
+			printf("ignoring %s, device type invalid\n", dev)
 		return 0
+	}
 
 	# run vol_id on dev, discard stderr
 	cmd = "/lib/udev/vol_id " dev " 2>/dev/null"
@@ -51,17 +89,22 @@ function parse_vol_id(name)
 		# split indice=value into array named vol_id
 		split($0, vol_id, "=")
 		sub(/^ID_FS_/, "", vol_id[1])
-		if (debug)
-			printf("debug: id[%s] = %s\n", tolower(vol_id[1]), vol_id[2])
+		# assign element to id
 		id[tolower(vol_id[1])] = vol_id[2]
+		if (debug)
+			printf("vol_id: id[%s] = %s\n", tolower(vol_id[1]), vol_id[2])
 	}
 
 	# return if we cannot handle fs
 	if (id["usage"] !~ /(filesystem|other)/ || ! id["type"] || \
-		id["type"] ~ /(unknown|iso9660|udf|squashfs)/)
+		id["type"] ~ /(unknown|iso9660|udf|squashfs)/) {
+		if (debug)
+			printf("ignoring %s, volume type or usage invalid\n", dev)
 		return 0
+	}
 	
 	if (id["label_safe"]) {
+		# check for duplicate label
 		if(id["label_safe"] in label) {
 			printf("W: duplicate LABEL: %s\n", id["label_safe"]) > "/dev/stderr"
 			return 1
@@ -71,6 +114,7 @@ function parse_vol_id(name)
 	}
 	
 	if (id["uuid"]) {
+		# check for duplicate uuid
 		if (id["uuid"] in uuid) {
 			printf("W: duplicate UUID: %s\n", id["uuid"]) > "/dev/stderr"
 			return 1
@@ -81,25 +125,23 @@ function parse_vol_id(name)
 
 	# use metainfo for linux native filesystems
 	if (id["type"] ~ /^(ext[234]|jfs|reiser|swap|xfs)/) {
-		if (labels && id["label_safe"])
-			mntdev = "LABEL=" id["label_safe"]
-		else if (uuids && id["uuid"])
-			mntdev = "UUID=" id["uuid"]
+		label_prefix = "LABEL="
+		uuid_prefix = "UUID="
 	}
-	# workaround for non-perfect non-native fs support: use long device node symlink
 	else {
-		if (labels && id["label_safe"])
-			mntdev = "/dev/disk/by-label/" id["label_safe"]
-		else if	(uuids && id["uuid"])
-			mntdev = "/dev/disk/by-uuid/" id["uuid"]
-		
-		# block device may not yet exist if vfat/ntfs volume was just created
-		if (blockdev_exists(mntdev) != 0)
-			mntdev = dev
+		label_prefix = "/dev/disk/by-label/"
+		uuid_prefix = "/dev/disk/by-uuid/"
 	}
 	
+	# form the device string, assign mntdev
+	if (labels && id["label_safe"])
+		mntdev = "LABEL=" id["label_safe"]
+	else if (uuids && id["uuid"])
+		mntdev = "UUID=" id["uuid"]
+	
 	# fall back to raw device name if uuid/label not found or wanted
-	if (! mntdev)
+	# block device must be resolvable with findfs
+	if (! mntdev || blockdev_exists(mntdev) != dev)
 		mntdev = dev
 
 	# no mount point for swap

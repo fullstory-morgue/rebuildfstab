@@ -2,12 +2,18 @@ rebuildfstab (0.6.22) UNRELEASED; urgency=low
 
   * rebuildfstab: use full path to scanpartitions consistently.
   * rebuildfstab: use scanpartitions instead of vol_id to get label comment.
-  * scanpartitions: use label for mountpoint name when labels are wanted.
-  * scanpartitions: add two arrays "uuid" and "label" to check for duplicate
-    uuid's and label's. If a uuid or label is found more than once, print a
-    warning to stderr and move onto next partition.
+  * scanpartitions: 
+    - add two arrays "uuid" and "label" to check for duplicate uuid's and
+      label's. If a uuid or label is found more than once, print a warning to
+      stderr and move onto next partition
+    - use label for mountpoint name when labels are wanted
+    - extend blockdev_exists() to resolve UUID and LABEL and return actual
+      device node for comparison by caller
+    - add a few debug points
+    - assign label_prefix and uuid_prefix the string that should appear in
+      front of device name depending on fs type
 
- -- Kel Modderman <kel@otaku42.de>  Thu, 28 Jun 2007 18:28:53 +1000
+ -- Kel Modderman <kel@otaku42.de>  Thu, 28 Jun 2007 20:13:39 +1000
 
 rebuildfstab (0.6.21) unstable; urgency=low
 
