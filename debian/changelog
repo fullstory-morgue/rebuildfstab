@@ -1,4 +1,4 @@
-rebuildfstab (0.6.22) UNRELEASED; urgency=low
+rebuildfstab (0.6.22) unstable; urgency=low
 
   * rebuildfstab: use full path to scanpartitions consistently.
   * rebuildfstab: use scanpartitions instead of vol_id to get label comment.
