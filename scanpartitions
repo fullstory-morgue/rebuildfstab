@@ -35,6 +35,7 @@ function blockdev_exists(node,    found_node, retval)
 			if (debug)
 				printf("findfs: %s -> %s\n", node, found_node)
 			node = found_node
+			close(cmd)
 		}
 		else
 			return retval
@@ -45,6 +46,7 @@ function blockdev_exists(node,    found_node, retval)
 			if (debug)
 				printf("readlink: %s -> %s\n", node, found_node)
 			node = found_node
+			close(cmd)
 		}
 		else
 			return retval
@@ -94,6 +96,7 @@ function parse_vol_id(name)
 		if (debug)
 			printf("vol_id: id[%s] = %s\n", tolower(vol_id[1]), vol_id[2])
 	}
+	close(cmd)
 
 	# return if we cannot handle fs
 	if (id["usage"] !~ /(filesystem|other)/ || ! id["type"] || \
