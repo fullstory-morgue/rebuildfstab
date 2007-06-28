@@ -13,8 +13,9 @@ rebuildfstab (0.6.22) UNRELEASED; urgency=low
     - assign label_prefix and uuid_prefix the string that should appear in
       front of device name depending on fs type
     - close all external commands piped through getline
+    - actually use label_prefix and uuid_prefix 
 
- -- Kel Modderman <kel@otaku42.de>  Thu, 28 Jun 2007 20:19:51 +1000
+ -- Kel Modderman <kel@otaku42.de>  Thu, 28 Jun 2007 20:31:17 +1000
 
 rebuildfstab (0.6.21) unstable; urgency=low
 

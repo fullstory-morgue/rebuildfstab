@@ -138,9 +138,9 @@ function parse_vol_id(name)
 	
 	# form the device string, assign mntdev
 	if (labels && id["label_safe"])
-		mntdev = "LABEL=" id["label_safe"]
+		mntdev = label_prefix id["label_safe"]
 	else if (uuids && id["uuid"])
-		mntdev = "UUID=" id["uuid"]
+		mntdev = uuid_prefix id["uuid"]
 	
 	# fall back to raw device name if uuid/label not found or wanted
 	# block device must be resolvable with findfs
