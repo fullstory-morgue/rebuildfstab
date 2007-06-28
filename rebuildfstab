@@ -237,9 +237,9 @@ comment_device()
 			# no need to display label in comment too
 			;;
 		*)
-			label=$(/lib/udev/vol_id -l $1 2>/dev/null)
+			label=$(/usr/sbin/scanpartitions -l $1 | awk '$1 ~ /^LABEL=.+/{ print $1 }')
 			if [ "$label" ]; then
-				comment="$1 LABEL=$label"
+				comment="$1 $label"
 			else
 				comment="$1 (no label)"
 			fi
@@ -277,7 +277,7 @@ devs_not_in_media()
 		[ "$#" != 0 ] && shift $#
 		
 		# assign positional parameters: ($1, $2, $3) = ($dev_name, $mntpnt, $fstype)
-		set -- $(scanpartitions $scan_opts $dev 2>/dev/null)
+		set -- $(/usr/sbin/scanpartitions $scan_opts $dev 2>/dev/null)
 		
 		# 3 positional parameters were not assigned above, via scanpartitions
 		# we cannot handle this device, process next possible device
