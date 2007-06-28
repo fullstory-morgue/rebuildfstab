@@ -40,7 +40,7 @@ function parse_vol_id(name)
 	dev = "/dev/" name
 
 	# test block device node for validity
-	if (blockdev_exists(dev) != 0 || name ~ /^(ram|cloop|loop).+/)
+	if (blockdev_exists(dev) != 0 || name ~ /^(ram|cloop|loop)[0-9]+/)
 		return 0
 
 	# run vol_id on dev, discard stderr
@@ -60,6 +60,24 @@ function parse_vol_id(name)
 	if (id["usage"] !~ /(filesystem|other)/ || ! id["type"] || \
 		id["type"] ~ /(unknown|iso9660|udf|squashfs)/)
 		return 0
+	
+	if (id["label_safe"]) {
+		if(id["label_safe"] in label) {
+			printf("W: duplicate LABEL: %s\n", id["label_safe"]) > "/dev/stderr"
+			return 1
+		}
+		else
+			label[id["label_safe"]] = 1
+	}
+	
+	if (id["uuid"]) {
+		if (id["uuid"] in uuid) {
+			printf("W: duplicate UUID: %s\n", id["uuid"]) > "/dev/stderr"
+			return 1
+		}
+		else
+			uuid[id["uuid"]] = 1
+	}
 
 	# use metainfo for linux native filesystems
 	if (id["type"] ~ /^(ext[234]|jfs|reiser|swap|xfs)/) {
