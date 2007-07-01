@@ -1,4 +1,4 @@
-rebuildfstab (0.6.23) UNRELEASED; urgency=low
+rebuildfstab (0.6.23) unstable; urgency=low
 
   * rebuildfstab: critical bugfix for reiserfs lovers; remount-ro was an
     ext[23] specific mount option, handle it as such.
