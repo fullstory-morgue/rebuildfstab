@@ -296,7 +296,13 @@ devs_not_in_media()
 					! grep -q -s "root=$dev_name" /proc/cmdline; then
 					warn_about_root_and_bootloader "$dev_name"
 				fi
-				options="defaults,errors=remount-ro"
+				# fstype specific mount options
+				case "${fstype}" in
+					ext[23])
+						# ext[23] specific: remount read only on error
+						options="defaults,errors=remount-ro"
+						;;
+				esac
 				;;
 			'/media/'*|'/fll'*)
 				continue
