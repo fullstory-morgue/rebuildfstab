@@ -1,3 +1,9 @@
+rebuildfstab (0.6.24) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Jul 2007 14:53:04 +0200
+
 rebuildfstab (0.6.23) unstable; urgency=low
 
   * rebuildfstab: critical bugfix for reiserfs lovers; remount-ro was an
