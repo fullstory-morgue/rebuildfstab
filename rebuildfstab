@@ -339,8 +339,8 @@ devs_in_media()
 	unset iocs nls 
 	
 	if [ "$(locale charmap)" = "UTF-8" ]; then
-		iocs="iocharset=utf8"
-		nls="nls=utf8"
+		iocs=",iocharset=utf8"
+		nls=",nls=utf8"
 	fi
 
 	while read dev_name point fstype relax; do
@@ -370,15 +370,15 @@ devs_in_media()
 
 				case "$fstype" in
 					ntfs)
-						options="${options},ro,dmask=0022,fmask=0133,${nls}"
+						options="${options},ro,dmask=0022,fmask=0133${nls}"
 						pass=0
 						;;
 					msdos)
-						options="${options},quiet,umask=000,${iocs}"
+						options="${options},quiet,umask=000${iocs}"
 						pass=0
 						;;
 					vfat)
-						options="${options},shortname=mixed,quiet,umask=000,${iocs}"
+						options="${options},shortname=mixed,quiet,umask=000${iocs}"
 						pass=0
 						;;
 					swap)
