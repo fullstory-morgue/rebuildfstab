@@ -1,4 +1,4 @@
-rebuildfstab (0.6.24) UNRELEASED; urgency=low
+rebuildfstab (0.6.24) unstable; urgency=low
 
   * Fix nls and iocharset mount options when system is not UTF-8.
 
