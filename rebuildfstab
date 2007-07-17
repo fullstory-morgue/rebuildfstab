@@ -336,11 +336,12 @@ devs_in_media()
 {
 	# now we scan all existing partitions, as detected by scanpartitions
 	
-	unset iocs nls 
+	unset iocs nls utf8
 	
 	if [ "$(locale charmap)" = "UTF-8" ]; then
 		iocs=",iocharset=utf8"
 		nls=",nls=utf8"
+		utf8=",utf8"
 	fi
 
 	while read dev_name point fstype relax; do
@@ -378,7 +379,7 @@ devs_in_media()
 						pass=0
 						;;
 					vfat)
-						options="${options},shortname=mixed,quiet,umask=000${iocs}"
+						options="${options},shortname=lower,quiet,umask=000${utf8}"
 						pass=0
 						;;
 					swap)

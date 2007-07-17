@@ -1,8 +1,8 @@
 rebuildfstab (0.6.25) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * vfat: use shortname=lower, not mixed. Use utf8 not iocharset=utf8.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 17 Jul 2007 01:12:43 +0200
+ -- Kel Modderman <kel@otaku42.de>  Wed, 18 Jul 2007 09:20:23 +1000
 
 rebuildfstab (0.6.24) unstable; urgency=low
 
