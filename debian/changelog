@@ -1,3 +1,9 @@
+rebuildfstab (0.6.26) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 18 Jul 2007 01:47:53 +0200
+
 rebuildfstab (0.6.25) unstable; urgency=low
 
   * vfat: use shortname=lower, not mixed. Use utf8 not iocharset=utf8.
