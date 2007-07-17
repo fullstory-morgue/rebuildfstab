@@ -1,4 +1,4 @@
-rebuildfstab (0.6.25) UNRELEASED; urgency=low
+rebuildfstab (0.6.25) unstable; urgency=low
 
   * vfat: use shortname=lower, not mixed. Use utf8 not iocharset=utf8.
 
