@@ -1,4 +1,4 @@
-rebuildfstab (0.6.26) UNRELEASED; urgency=low
+rebuildfstab (0.6.26) unstable; urgency=low
 
   * Only do duplicity checking for uuids or labels if we are outputting them
     also.
