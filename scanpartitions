@@ -106,7 +106,7 @@ function parse_vol_id(name)
 		return 0
 	}
 	
-	if (id["label_safe"]) {
+	if (labels && id["label_safe"]) {
 		# check for duplicate label
 		if(id["label_safe"] in label) {
 			printf("W: duplicate LABEL: %s\n", id["label_safe"]) > "/dev/stderr"
@@ -116,7 +116,7 @@ function parse_vol_id(name)
 			label[id["label_safe"]] = 1
 	}
 	
-	if (id["uuid"]) {
+	if (uuids && id["uuid"]) {
 		# check for duplicate uuid
 		if (id["uuid"] in uuid) {
 			printf("W: duplicate UUID: %s\n", id["uuid"]) > "/dev/stderr"
