@@ -1,3 +1,9 @@
+rebuildfstab (0.6.27) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 23 Jul 2007 09:50:36 +0200
+
 rebuildfstab (0.6.26) unstable; urgency=low
 
   * Only do duplicity checking for uuids or labels if we are outputting them
