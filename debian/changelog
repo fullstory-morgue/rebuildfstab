@@ -1,3 +1,9 @@
+rebuildfstab (0.6.28) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 24 Jul 2007 14:18:46 +0200
+
 rebuildfstab (0.6.27) unstable; urgency=low
 
   * Perl port of scanpartitions; smaller, easier to maintain.
