@@ -37,6 +37,7 @@ fstab="/etc/fstab"
 scan_opts=""
 no_swap=""
 quiet=""
+auto="noauto"
 
 #--------------------------------------------------------------
 
@@ -363,11 +364,7 @@ devs_in_media()
 
 				create_media_entry $point
 
-				if [ "$auto" = 1 ]; then
-					options="auto,users,exec"
-				else
-					options="noauto,users,exec"
-				fi
+				options="${auto},user,exec"
 
 				case "$fstype" in
 					ntfs)
@@ -379,7 +376,7 @@ devs_in_media()
 						pass=0
 						;;
 					vfat)
-						options="${options},shortname=lower,quiet,umask=000${utf8}"
+						options="${options},flush,shortname=lower,quiet,umask=000${utf8}"
 						pass=0
 						;;
 					swap)
@@ -465,7 +462,7 @@ eval set -- "$TEMP"
 while true ; do
 	case "$1" in
 		-a|--auto)
-			auto=1
+			auto="auto"
 			shift
 			;;
 		-d|--debug)
