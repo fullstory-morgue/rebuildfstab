@@ -1,4 +1,4 @@
-#!/usr/bin/gawk -f
+#!/usr/bin/perl -w
 #
 # Copyright (C) 2007 Kel Modderman <kel@otaku42.de>
 #		     Michiel de Boer <locsmif@kanotix.com>
@@ -21,186 +21,107 @@
 # On Debian GNU/Linux systems, the text of the GPL license can be
 # found in /usr/share/common-licenses/GPL.
 
-function blockdev_exists(node,    found_node, retval)
-{
-	# returns actual device node when successful
-	retval = 0
+use strict;
+use Getopt::Long qw(:config bundling no_auto_abbrev);
+#use Data::Dump qw(dump);
 
-	if (debug)
-		printf("blockdev_exists: default retval = %s\n", retval)
-	
-	if (node ~ /^(LABEL|UUID)=.+/) {
-		cmd = "findfs " node
-		if((cmd | getline found_node) > 0) {
-			if (debug)
-				printf("findfs: %s -> %s\n", node, found_node)
-			node = found_node
-			close(cmd)
-		}
-		else
-			return retval
+die("Must be root...\n") unless $> == 0;
+
+my (%partitions, %uuid, %label, %fstab);
+my ($debug, $uuids, $labels) = (0, 0, 0);
+
+sub vol_id {
+	return unless -x '/lib/udev/vol_id';
+
+	my $vol = shift;
+	if ($vol !~ m|^/dev/|) {
+		$vol = "/dev/$vol";
 	}
-	else if (node ~ /^\/dev\/disk\/by-(label|uuid)\/.+/) {
-		cmd = "readlink -f " node
-		if((cmd | getline found_node) > 0) {
-			if (debug)
-				printf("readlink: %s -> %s\n", node, found_node)
-			node = found_node
-			close(cmd)
-		}
-		else
-			return retval
-	}
-	
-	if (system("test -b \"" node  "\"") == 0)
-		retval = node
-	
-	if (debug)
-		printf("blockdev_exists: final retval = %s\n", retval)
-	
-	return retval
-}
+	return unless -b $vol;
 
-function parse_vol_id(name)
-{
-	# ensure these var's are empty
-	delete id
-	delete vol_id
-	mntdev = mntpnt = ""
-
-	# ensure name has /dev/ stripped from it, and dev is prefixed with /dev/
-	# looks stupid, but allows for both sdaX and /dev/sdaX as device arguments
-	sub(/^\/dev\//, "", name)
-	dev = "/dev/" name
-
-	if (debug)
-		printf("parse_vol_id: %s\n", dev)
-
-	# test block device node for validity
-	if (blockdev_exists(dev) != dev || name ~ /^(ram|cloop|loop)[0-9]+/) {
-		if (debug)
-			printf("ignoring %s, device type invalid\n", dev)
-		return 0
-	}
-
-	# run vol_id on dev, discard stderr
-	cmd = "/lib/udev/vol_id " dev " 2>/dev/null"
-	# form assoc. array `id'
-	while ((cmd | getline) > 0) {
-		# indices: label label_safe type usage uuid version
-		# split indice=value into array named vol_id
-		split($0, vol_id, "=")
-		sub(/^ID_FS_/, "", vol_id[1])
-		# assign element to id
-		id[tolower(vol_id[1])] = vol_id[2]
-		if (debug)
-			printf("vol_id: id[%s] = %s\n", tolower(vol_id[1]), vol_id[2])
-	}
-	close(cmd)
-
-	# return if we cannot handle fs
-	if (id["usage"] !~ /(filesystem|other)/ || ! id["type"] || \
-		id["type"] ~ /(unknown|iso9660|udf|squashfs)/) {
-		if (debug)
-			printf("ignoring %s, volume type or usage invalid\n", dev)
-		return 0
-	}
-	
-	if (labels && id["label_safe"]) {
-		# check for duplicate label
-		if(id["label_safe"] in label) {
-			printf("W: duplicate LABEL: %s\n", id["label_safe"]) > "/dev/stderr"
-			return 1
-		}
-		else
-			label[id["label_safe"]] = 1
-	}
-	
-	if (uuids && id["uuid"]) {
-		# check for duplicate uuid
-		if (id["uuid"] in uuid) {
-			printf("W: duplicate UUID: %s\n", id["uuid"]) > "/dev/stderr"
-			return 1
-		}
-		else
-			uuid[id["uuid"]] = 1
-	}
-
-	# use metainfo for linux native filesystems
-	if (id["type"] ~ /^(ext[234]|jfs|reiser|swap|xfs)/) {
-		label_prefix = "LABEL="
-		uuid_prefix = "UUID="
-	}
-	else {
-		label_prefix = "/dev/disk/by-label/"
-		uuid_prefix = "/dev/disk/by-uuid/"
-	}
-	
-	# form the device string, assign mntdev
-	if (labels && id["label_safe"])
-		mntdev = label_prefix id["label_safe"]
-	else if (uuids && id["uuid"])
-		mntdev = uuid_prefix id["uuid"]
-	
-	# fall back to raw device name if uuid/label not found or wanted
-	# block device must be resolvable with findfs
-	if (! mntdev || blockdev_exists(mntdev) != dev)
-		mntdev = dev
-
-	# no mount point for swap
-	if (id["type"] == "swap")
-		mntpnt = "none"
-	else if (labels && id["label_safe"])
-		mntpnt = "/media/" id["label_safe"]
-	else
-		mntpnt = "/media/" name
-	
-	# print something useful for a fstab helper program
-	print(mntdev, mntpnt, id["type"])
-}
-
-function parse_all() {
-	# parse /proc/partitions
-	while (getline < "/proc/partitions") {
-		# major minor #blocks name
-		#
-		# Skip if illegal entry, or if first column is not a number, or if
-		# number of blocks indicates ext. partition
-		# Note: $2 % 16 could be used to determine major block device,
-		# such as hda. However superfloppies are possible, so leaving that
-		# out.
-		if (! $4 || $1 !~ /[0-9]+/ || $3 < 2)
-			continue
-		else
-			parse_vol_id($4)
-	}
-}
-
-function usage() {
-	print("Usage: scanpartitions [-l|--labels] [-u|--uuids] [-d|--debug] [device]")
-	exit(0)
-}
-
-BEGIN {
-	if (ARGC > 1) {
-		# test devices given as arguments
-		for (i = 1; i < ARGC; i++) {
-			if (ARGV[i] ~ /^(-u|--uuids)$/)
-				uuids = 1
-			else if	(ARGV[i] ~ /^(-l|--labels)$/)
-				labels = 1
-			else if (ARGV[i] ~ /^(-d|--debug)$/)
-				debug = 1
-			else if	(ARGV[i] ~ /^-/)
-				usage()
-			else
-				disk[++j] = ARGV[i]
+	open(my $fh, "-|", "/lib/udev/vol_id $vol 2>/dev/null");
+	while (<$fh>) {
+		print if $debug > 0;
+		if (/^ID_FS_([^=]+)=(.+)$/) {
+			chomp($_);
+			$partitions{$vol}{lc($1)} = $2;
 		}
 	}
-	
-	if (disk[1])
-		for (i in disk) parse_vol_id(disk[i])
-	else
-		parse_all()
+	close($fh);
 }
 
+sub parse_partitions {
+	return unless -f '/proc/partitions';
+
+	open(my $fh, '<', '/proc/partitions');
+	while (<$fh>) {
+		print if $debug > 0;
+		if(/\s+(\d+)\s+(\d+)\s+(\d+)\s+(.+)/) {
+			next if $4 =~ /^(ram|cloop|loop)[0-9]*/;
+			vol_id($4);
+		}
+	}
+	close($fh);
+}
+
+GetOptions(
+	"d|debug" => sub { $debug++ },
+	"u|uuids" => sub { $uuids++ },
+	"l|labels" => sub { $labels++ },
+);
+
+if (@ARGV) {
+	vol_id($_) foreach (sort @ARGV);
+}
+else {
+	parse_partitions();
+}
+
+#dump(\%partitions);
+
+PART: foreach my $p (sort keys %partitions) {
+	next if $partitions{$p}{'usage'} !~ /(filesystem|other)/;
+	next if $partitions{$p}{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
+
+	%fstab = ();
+	
+	if ($uuids > 0 and $partitions{$p}{'uuid'}) {
+		if (exists $uuid{$partitions{$p}{'uuid'}}) {
+			printf(STDERR "Duplicate UUID: %s\n", $partitions{$p}{'uuid'});
+			next PART;
+		}
+		# add to uuid hash
+		$uuid{$partitions{$p}{'uuid'}} = 1;
+		# form UUID string for fstab
+		$fstab{'mntdev'} = ($partitions{$p}{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			"/dev/disk/by-uuid/" . $partitions{$p}{'uuid'} :
+			"UUID=" . $partitions{$p}{'uuid'};
+	}
+
+	if ($labels > 0 and $partitions{$p}{'label_safe'}) {
+		if (exists $label{$partitions{$p}{'label_safe'}}) {
+			printf(STDERR "Duplicate LABEL: %s\n", $partitions{$p}{'label_safe'});
+			next PART;
+		}
+		# add to label hash
+		$label{$partitions{$p}{'label_safe'}} = 1;
+		# form LABEL fstab string
+		$fstab{'mntdev'} = ($partitions{$p}{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			"/dev/disk/by-label/" . $partitions{$p}{'label_safe'} : 
+			"LABEL=" . $partitions{$p}{'label_safe'};
+		# mountpoint name is label
+		$fstab{'mntpnt'} = "/media/" . $partitions{$p}{'label_safe'};
+	}
+
+	# device name as default/fallback
+	$fstab{'mntdev'} = $p unless exists $fstab{'mntdev'};
+
+	# mountpoint name, none for swap, /media/XXX for everything else
+	$fstab{'mntpnt'} = 'none' if $partitions{$p}{'type'} eq 'swap';
+	$fstab{'mntpnt'} = "/media/" . $p unless exists $fstab{'mntpnt'};
+	$fstab{'mntpnt'} =~ s|/dev/||;
+
+	#dump(\%fstab);
+
+	printf("%s %s %s\n", $fstab{'mntdev'}, $fstab{'mntpnt'}, $partitions{$p}{'type'});
+}
