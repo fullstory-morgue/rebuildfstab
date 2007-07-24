@@ -110,7 +110,7 @@ PART: foreach my $p (sort keys %partitions) {
 			"/dev/disk/by-label/" . $partitions{$p}{'label_safe'} : 
 			"LABEL=" . $partitions{$p}{'label_safe'};
 		# mountpoint name is label
-		$fstab{'mntpnt'} = "/media/" . $partitions{$p}{'label_safe'};
+		$fstab{'mntpnt'} = '/media/' . $partitions{$p}{'label_safe'};
 	}
 
 	# device name as default/fallback
@@ -118,7 +118,7 @@ PART: foreach my $p (sort keys %partitions) {
 
 	# mountpoint name, none for swap, /media/XXX for everything else
 	$fstab{'mntpnt'} = 'none' if $partitions{$p}{'type'} eq 'swap';
-	$fstab{'mntpnt'} = "/media/" . $p unless exists $fstab{'mntpnt'};
+	$fstab{'mntpnt'} = '/media/' . $p unless exists $fstab{'mntpnt'};
 	$fstab{'mntpnt'} =~ s|/dev/||;
 
 	#dump(\%fstab);
