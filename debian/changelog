@@ -1,4 +1,4 @@
-rebuildfstab (0.6.27) UNRELEASED; urgency=low
+rebuildfstab (0.6.27) unstable; urgency=low
 
   * Perl port of scanpartitions; smaller, easier to maintain.
 
