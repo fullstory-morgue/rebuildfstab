@@ -42,8 +42,8 @@ sub vol_id {
 	open(my $fh, "-|", "/lib/udev/vol_id $vol 2>/dev/null");
 	while (<$fh>) {
 		print if $debug > 0;
+		chomp($_);
 		if (/^ID_FS_([^=]+)=(.+)$/) {
-			chomp($_);
 			$partitions{$vol}{lc($1)} = $2;
 		}
 	}
@@ -86,7 +86,7 @@ PART: foreach my $p (sort keys %partitions) {
 	%fstab = ();
 	
 	if ($uuids > 0 and $partitions{$p}{'uuid'}) {
-		if (exists $uuid{$partitions{$p}{'uuid'}}) {
+		if (defined $uuid{$partitions{$p}{'uuid'}}) {
 			printf(STDERR "Duplicate UUID: %s\n", $partitions{$p}{'uuid'});
 			next PART;
 		}
@@ -99,7 +99,7 @@ PART: foreach my $p (sort keys %partitions) {
 	}
 
 	if ($labels > 0 and $partitions{$p}{'label_safe'}) {
-		if (exists $label{$partitions{$p}{'label_safe'}}) {
+		if (defined $label{$partitions{$p}{'label_safe'}}) {
 			printf(STDERR "Duplicate LABEL: %s\n", $partitions{$p}{'label_safe'});
 			next PART;
 		}
@@ -118,7 +118,7 @@ PART: foreach my $p (sort keys %partitions) {
 
 	# mountpoint name, none for swap, /media/XXX for everything else
 	$fstab{'mntpnt'} = 'none' if $partitions{$p}{'type'} eq 'swap';
-	$fstab{'mntpnt'} = '/media/' . $p unless exists $fstab{'mntpnt'};
+	$fstab{'mntpnt'} = '/media/' . $p unless defined $fstab{'mntpnt'};
 	$fstab{'mntpnt'} =~ s|/dev/||;
 
 	#dump(\%fstab);
