@@ -364,7 +364,7 @@ devs_in_media()
 
 				create_media_entry $point
 
-				options="${auto},user,exec"
+				options="${auto},users,exec"
 
 				case "$fstype" in
 					ntfs)
