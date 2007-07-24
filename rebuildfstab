@@ -376,7 +376,7 @@ devs_in_media()
 						pass=0
 						;;
 					vfat)
-						options="${options},flush,shortname=lower,quiet,umask=000${utf8}"
+						options="${options},shortname=lower,quiet,umask=000${utf8}"
 						pass=0
 						;;
 					swap)
