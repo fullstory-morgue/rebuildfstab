@@ -80,48 +80,51 @@ else {
 #dump(\%partitions);
 
 PART: foreach my $p (sort keys %partitions) {
-	next if $partitions{$p}{'usage'} !~ /(filesystem|other)/;
-	next if $partitions{$p}{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
+	my $pp = $partitions{$p}; %fstab = ();
+	#dump(\$pp);
 
-	%fstab = ();
+	next if $$pp{'usage'} !~ /(filesystem|other)/;
+	next if $$pp{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
 	
-	if ($uuids > 0 and $partitions{$p}{'uuid'}) {
-		if (defined $uuid{$partitions{$p}{'uuid'}}) {
-			printf(STDERR "Duplicate UUID: %s\n", $partitions{$p}{'uuid'});
+	if ($uuids > 0 and $$pp{'uuid'}) {
+		if (defined $uuid{$$pp{'uuid'}}) {
+			printf(STDERR "Duplicate UUID: %s\n", $$pp{'uuid'});
 			next PART;
 		}
 		# add to uuid hash
-		$uuid{$partitions{$p}{'uuid'}} = 1;
+		$uuid{$$pp{'uuid'}} = 1;
 		# form UUID string for fstab
-		$fstab{'mntdev'} = ($partitions{$p}{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
-			"/dev/disk/by-uuid/" . $partitions{$p}{'uuid'} :
-			"UUID=" . $partitions{$p}{'uuid'};
+		$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			"/dev/disk/by-uuid/" . $$pp{'uuid'} :
+			"UUID=" . $$pp{'uuid'};
 	}
 
-	if ($labels > 0 and $partitions{$p}{'label_safe'}) {
-		if (defined $label{$partitions{$p}{'label_safe'}}) {
-			printf(STDERR "Duplicate LABEL: %s\n", $partitions{$p}{'label_safe'});
+	if ($labels > 0 and $$pp{'label_safe'}) {
+		if (defined $label{$$pp{'label_safe'}}) {
+			printf(STDERR "Duplicate LABEL: %s\n", $$pp{'label_safe'});
 			next PART;
 		}
 		# add to label hash
-		$label{$partitions{$p}{'label_safe'}} = 1;
+		$label{$$pp{'label_safe'}} = 1;
 		# form LABEL fstab string
-		$fstab{'mntdev'} = ($partitions{$p}{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
-			"/dev/disk/by-label/" . $partitions{$p}{'label_safe'} : 
-			"LABEL=" . $partitions{$p}{'label_safe'};
+		$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			"/dev/disk/by-label/" . $$pp{'label_safe'} : 
+			"LABEL=" . $$pp{'label_safe'};
 		# mountpoint name is label
-		$fstab{'mntpnt'} = '/media/' . $partitions{$p}{'label_safe'};
+		$fstab{'mntpnt'} = '/media/' . $$pp{'label_safe'};
 	}
 
 	# device name as default/fallback
 	$fstab{'mntdev'} = $p unless exists $fstab{'mntdev'};
 
 	# mountpoint name, none for swap, /media/XXX for everything else
-	$fstab{'mntpnt'} = 'none' if $partitions{$p}{'type'} eq 'swap';
+	$fstab{'mntpnt'} = 'none' if $$pp{'type'} eq 'swap';
 	$fstab{'mntpnt'} = '/media/' . $p unless defined $fstab{'mntpnt'};
 	$fstab{'mntpnt'} =~ s|/dev/||;
 
+	# for completeness
+	$fstab{'fstype'} = $$pp{'type'};
 	#dump(\%fstab);
 
-	printf("%s %s %s\n", $fstab{'mntdev'}, $fstab{'mntpnt'}, $partitions{$p}{'type'});
+	printf("%s %s %s\n", $fstab{'mntdev'}, $fstab{'mntpnt'}, $fstab{'fstype'});
 }

@@ -1,3 +1,10 @@
+rebuildfstab (0.6.29) UNRELEASED; urgency=low
+
+  * scanpartitions: make good use of a hashref in the PART loop as per bfree's
+    advice.
+
+ -- Kel Modderman <kel@otaku42.de>  Wed, 25 Jul 2007 18:36:47 +1000
+
 rebuildfstab (0.6.28) unstable; urgency=low
 
   * scanpartitions: use defined() to test hash elements, move stray chomp().
