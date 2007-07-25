@@ -1,4 +1,4 @@
-rebuildfstab (0.6.28) UNRELEASED; urgency=low
+rebuildfstab (0.6.28) unstable; urgency=low
 
   * scanpartitions: use defined() to test hash elements, move stray chomp().
   * rebuildfstab: simplify auto option handling.
