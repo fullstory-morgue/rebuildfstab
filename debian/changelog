@@ -1,3 +1,9 @@
+rebuildfstab (0.6.30) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 25 Jul 2007 12:31:51 +0200
+
 rebuildfstab (0.6.29) unstable; urgency=low
 
   * scanpartitions: make good use of a hashref in the PART loop as per bfree's
