@@ -1,4 +1,4 @@
-rebuildfstab (0.6.29) UNRELEASED; urgency=low
+rebuildfstab (0.6.29) unstable; urgency=low
 
   * scanpartitions: make good use of a hashref in the PART loop as per bfree's
     advice.
