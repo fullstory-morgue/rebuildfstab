@@ -90,7 +90,7 @@ foreach my $p (sort keys %partitions) {
 
 	if ($uuids > 0 and $$pp{'uuid'}) {
 		if (defined $uuid{$$pp{'uuid'}}) {
-			printf(STDERR "Duplicate UUID: %s\n", $$pp{'uuid'});
+			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $$pp{'uuid'});
 		}
 		else {
 			# add to uuid hash
@@ -104,7 +104,7 @@ foreach my $p (sort keys %partitions) {
 
 	if ($labels > 0 and $$pp{'label_safe'}) {
 		if (defined $label{$$pp{'label_safe'}}) {
-			printf(STDERR "Duplicate LABEL: %s\n", $$pp{'label_safe'});
+			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $$pp{'label_safe'});
 		}
 		else {
 			# add to label hash
