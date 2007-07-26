@@ -1,4 +1,4 @@
-rebuildfstab (0.6.30) UNRELEASED; urgency=low
+rebuildfstab (0.6.30) unstable; urgency=low
 
   * scanpartitions: small cosmetics.
   * scanpartitions: improve debug output.
