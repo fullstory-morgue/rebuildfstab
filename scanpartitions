@@ -35,7 +35,7 @@ sub vol_id {
 
 	my $vol = shift;
 	if ($vol !~ m|^/dev/|) {
-		$vol = "/dev/$vol";
+		$vol = "/dev/" . $vol;
 	}
 	return unless -b $vol;
 
