@@ -23,12 +23,22 @@
 
 use strict;
 use Getopt::Long qw(:config bundling no_auto_abbrev);
-use Data::Dumper;
 
 die("Must be root...\n") unless $> == 0;
 
 my (%partitions, %uuid, %label);
 my ($debug, $uuids, $labels) = (0, 0, 0);
+
+sub dbg {
+	return unless $debug;
+	
+	if (ref $_[0]) {
+		print STDERR Dumper($_[0]);
+	}
+	else {
+		printf(STDERR "%s\n", $_[0]);
+	}
+}
 
 sub vol_id {
 	return unless -x '/lib/udev/vol_id';
@@ -41,11 +51,9 @@ sub vol_id {
 
 	open(my $fh, "-|", "/lib/udev/vol_id $vol 2>/dev/null");
 	while (<$fh>) {
-		print if $debug > 0;
-		chomp($_);
-		if (/^ID_FS_([^=]+)=(.+)$/) {
-			$partitions{$vol}{lc($1)} = $2;
-		}
+		chomp;
+		dbg($_);
+		m/^ID_FS_([^=]+)=(.+)$/ and $partitions{$vol}{lc($1)} = $2;
 	}
 	close($fh);
 }
@@ -55,7 +63,8 @@ sub parse_partitions {
 
 	open(my $fh, '<', '/proc/partitions');
 	while (<$fh>) {
-		print if $debug > 0;
+		chomp;
+		dbg($_);
 		if(/\s+(\d+)\s+(\d+)\s+(\d+)\s+(.+)/) {
 			next if $4 =~ /^(ram|cloop|loop)[0-9]*/;
 			vol_id($4);
@@ -70,6 +79,11 @@ GetOptions(
 	"l|labels" => sub { $labels++ },
 );
 
+if ($debug) {
+	require Data::Dumper;
+	import Data::Dumper;
+}
+
 if (@ARGV) {
 	vol_id($_) foreach (sort @ARGV);
 }
@@ -77,18 +91,16 @@ else {
 	parse_partitions();
 }
 
-print Dumper(\%partitions) if $debug > 0;
+dbg(\%partitions);
 
 foreach my $p (sort keys %partitions) {
-	my $pp = $partitions{$p};
-	print Dumper($p, \$pp) if $debug > 0;
+	my ($pp, $mntdev, $mntpnt) = ($partitions{$p}, undef, undef);
+	dbg("\$p = '$p'"); dbg(\%{$partitions{$p}});
 
 	next if $$pp{'usage'} !~ /(filesystem|other)/;
 	next if $$pp{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
 
-	my %fstab = ();
-
-	if ($uuids > 0 and $$pp{'uuid'}) {
+	if ($uuids and $$pp{'uuid'}) {
 		if (defined $uuid{$$pp{'uuid'}}) {
 			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $$pp{'uuid'});
 		}
@@ -96,13 +108,13 @@ foreach my $p (sort keys %partitions) {
 			# add to uuid hash
 			$uuid{$$pp{'uuid'}} = 1;
 			# form UUID string for fstab
-			$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
 				"/dev/disk/by-uuid/" . $$pp{'uuid'} :
 				"UUID=" . $$pp{'uuid'};
 		}
 	}
 
-	if ($labels > 0 and $$pp{'label_safe'}) {
+	if ($labels and $$pp{'label_safe'}) {
 		if (defined $label{$$pp{'label_safe'}}) {
 			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $$pp{'label_safe'});
 		}
@@ -110,25 +122,22 @@ foreach my $p (sort keys %partitions) {
 			# add to label hash
 			$label{$$pp{'label_safe'}} = 1;
 			# form LABEL fstab string
-			$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
 				"/dev/disk/by-label/" . $$pp{'label_safe'} : 
 				"LABEL=" . $$pp{'label_safe'};
 			# mountpoint name is label
-			$fstab{'mntpnt'} = '/media/' . $$pp{'label_safe'};
+			$mntpnt = '/media/' . $$pp{'label_safe'};
 		}
 	}
 
 	# device name as default/fallback
-	$fstab{'mntdev'} = $p unless exists $fstab{'mntdev'};
+	$mntdev ||= $p;
 
 	# mountpoint name, none for swap, /media/XXX for everything else
-	$fstab{'mntpnt'} = 'none' if $$pp{'type'} eq 'swap';
-	$fstab{'mntpnt'} = '/media/' . $p unless defined $fstab{'mntpnt'};
-	$fstab{'mntpnt'} =~ s|/dev/||;
+	$mntpnt = 'none' if $$pp{'type'} eq 'swap';
+	($mntpnt ||= '/media/' . $p) =~ s|/dev/||;
 
-	# for completeness
-	$fstab{'fstype'} = $$pp{'type'};
-	print Dumper(\%fstab) if $debug > 0;
+	dbg("\$mntdev = '$mntdev'; \$mntpnt = '$mntpnt'");
 
-	printf("%s %s %s\n", $fstab{'mntdev'}, $fstab{'mntpnt'}, $fstab{'fstype'});
+	printf("%s %s %s\n", $mntdev, $mntpnt, $$pp{'type'});
 }

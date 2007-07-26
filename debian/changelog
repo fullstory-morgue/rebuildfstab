@@ -5,8 +5,13 @@ rebuildfstab (0.6.30) UNRELEASED; urgency=low
   * scanpartitions: don't ignore devices with duplicate UUID/LABEL, just
     fallback to device node name (with warning).
   * scanpartitions: improve warning about duplicate UUID/LABEL.
+  * scanpartitions: merge enhancements from smif
+    - dbg function, dumps references with Dumper or prints strings to STDERR
+    - various code optimisations
+    - conditionally use Data::Dumper when $debug is set via cli option
+    - replace %fstab with scalars, it never represented a real structure
 
- -- Kel Modderman <kel@otaku42.de>  Thu, 26 Jul 2007 11:08:36 +1000
+ -- Kel Modderman <kel@otaku42.de>  Thu, 26 Jul 2007 22:03:51 +1000
 
 rebuildfstab (0.6.29) unstable; urgency=low
 
