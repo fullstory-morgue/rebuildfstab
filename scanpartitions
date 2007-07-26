@@ -81,7 +81,7 @@ print Dumper(\%partitions) if $debug > 0;
 
 foreach my $p (sort keys %partitions) {
 	my $pp = $partitions{$p};
-	print Dumper(\$pp) if $debug > 0;
+	print Dumper($p, \$pp) if $debug > 0;
 
 	next if $$pp{'usage'} !~ /(filesystem|other)/;
 	next if $$pp{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
