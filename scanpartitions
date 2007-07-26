@@ -27,7 +27,7 @@ use Getopt::Long qw(:config bundling no_auto_abbrev);
 
 die("Must be root...\n") unless $> == 0;
 
-my (%partitions, %uuid, %label, %fstab);
+my (%partitions, %uuid, %label);
 my ($debug, $uuids, $labels) = (0, 0, 0);
 
 sub vol_id {
@@ -80,12 +80,14 @@ else {
 #dump(\%partitions);
 
 PART: foreach my $p (sort keys %partitions) {
-	my $pp = $partitions{$p}; %fstab = ();
+	my $pp = $partitions{$p};
 	#dump(\$pp);
 
 	next if $$pp{'usage'} !~ /(filesystem|other)/;
 	next if $$pp{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
-	
+
+	my %fstab = ();
+
 	if ($uuids > 0 and $$pp{'uuid'}) {
 		if (defined $uuid{$$pp{'uuid'}}) {
 			printf(STDERR "Duplicate UUID: %s\n", $$pp{'uuid'});
