@@ -79,7 +79,7 @@ else {
 
 print Dumper(\%partitions) if $debug > 0;
 
-PART: foreach my $p (sort keys %partitions) {
+foreach my $p (sort keys %partitions) {
 	my $pp = $partitions{$p};
 	print Dumper(\$pp) if $debug > 0;
 
@@ -91,29 +91,31 @@ PART: foreach my $p (sort keys %partitions) {
 	if ($uuids > 0 and $$pp{'uuid'}) {
 		if (defined $uuid{$$pp{'uuid'}}) {
 			printf(STDERR "Duplicate UUID: %s\n", $$pp{'uuid'});
-			next PART;
 		}
-		# add to uuid hash
-		$uuid{$$pp{'uuid'}} = 1;
-		# form UUID string for fstab
-		$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
-			"/dev/disk/by-uuid/" . $$pp{'uuid'} :
-			"UUID=" . $$pp{'uuid'};
+		else {
+			# add to uuid hash
+			$uuid{$$pp{'uuid'}} = 1;
+			# form UUID string for fstab
+			$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+				"/dev/disk/by-uuid/" . $$pp{'uuid'} :
+				"UUID=" . $$pp{'uuid'};
+		}
 	}
 
 	if ($labels > 0 and $$pp{'label_safe'}) {
 		if (defined $label{$$pp{'label_safe'}}) {
 			printf(STDERR "Duplicate LABEL: %s\n", $$pp{'label_safe'});
-			next PART;
 		}
-		# add to label hash
-		$label{$$pp{'label_safe'}} = 1;
-		# form LABEL fstab string
-		$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
-			"/dev/disk/by-label/" . $$pp{'label_safe'} : 
-			"LABEL=" . $$pp{'label_safe'};
-		# mountpoint name is label
-		$fstab{'mntpnt'} = '/media/' . $$pp{'label_safe'};
+		else {
+			# add to label hash
+			$label{$$pp{'label_safe'}} = 1;
+			# form LABEL fstab string
+			$fstab{'mntdev'} = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+				"/dev/disk/by-label/" . $$pp{'label_safe'} : 
+				"LABEL=" . $$pp{'label_safe'};
+			# mountpoint name is label
+			$fstab{'mntpnt'} = '/media/' . $$pp{'label_safe'};
+		}
 	}
 
 	# device name as default/fallback

@@ -2,8 +2,10 @@ rebuildfstab (0.6.30) UNRELEASED; urgency=low
 
   * scanpartitions: small cosmetics.
   * scanpartitions: improve debug output.
+  * scanpartitions: don't ignore devices with duplicate UUID/LABEL, just
+    fallback to device node name (with warning).
 
- -- Kel Modderman <kel@otaku42.de>  Thu, 26 Jul 2007 10:52:57 +1000
+ -- Kel Modderman <kel@otaku42.de>  Thu, 26 Jul 2007 11:06:10 +1000
 
 rebuildfstab (0.6.29) unstable; urgency=low
 
