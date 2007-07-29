@@ -1,4 +1,4 @@
-rebuildfstab (0.6.31) UNRELEASED; urgency=low
+rebuildfstab (0.6.31) unstable; urgency=low
 
   * scanpartitions: dbg() cleanup, append output with ;, use shift.
 
