@@ -32,11 +32,12 @@ my ($debug, $uuids, $labels) = (0, 0, 0);
 sub dbg {
 	return unless $debug;
 	
-	if (ref $_[0]) {
-		print STDERR Dumper($_[0]);
+	my $data = shift;
+	if (ref $data) {
+		print STDERR Dumper($data);
 	}
 	else {
-		printf(STDERR "%s\n", $_[0]);
+		printf(STDERR "%s;\n", $data);
 	}
 }
 
