@@ -1,4 +1,4 @@
-rebuildfstab (0.6.32) UNRELEASED; urgency=low
+rebuildfstab (0.6.32) unstable; urgency=low
 
   * scanpartitions: evaluate whether or not computed uuid or label actually
     correlate to a /dev/disk/by-(label|uuid)/ device node symlink.
