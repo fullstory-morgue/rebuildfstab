@@ -247,9 +247,9 @@ comment_device()
 		*)
 			case "$scan_opts" in
 				*labels*)
-				# no need to display label in comment too
-				return 0
-				;;
+					# no need to display label in comment too
+					return 0
+					;;
 			esac
 			label=$(/usr/sbin/scanpartitions -l $1 | awk '$1 ~ /^LABEL=.+/{ print $1 }')
 			if [ "$label" ]; then
