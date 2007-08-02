@@ -141,7 +141,7 @@ start()
 {
 	out "%s\n" "# /etc/fstab: static file system information" 
 	out "%s\n" "#"
-	out "%s\t%s\t%s\t%s\t%s\n\n" "# <file system>" "<mount point>" "<type>" "<options>" "<dump> <pass>"
+	out "%s\t%s\t%s\t%s\t%s\n\n" "# <filesystem>" "<mountpoint>" "<type>" "<options>" "<dump> <pass>"
 }
 
 #--------------------------------------------------------------
