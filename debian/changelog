@@ -1,4 +1,4 @@
-rebuildfstab (0.6.33) UNRELEASED; urgency=low
+rebuildfstab (0.6.33) unstable; urgency=low
 
   * Cleanup out() usage, no need for %s and args.
   * Add ata labels to cdrom devices in fstab comments.
