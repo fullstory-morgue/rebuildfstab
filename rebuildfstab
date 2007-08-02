@@ -232,7 +232,7 @@ resolve_device_node()
 comment_device()
 {
 	local device="$1"
-	local comment="$device"
+	local comment
 	local label
 	
 	case "${device#/dev/}" in
@@ -248,19 +248,23 @@ comment_device()
 			case "$scan_opts" in
 				*labels*)
 					# no need to display label in comment too
+					echo "[$device]"
 					return 0
+					;;
+				*uuids*)
+					comment="$device, "
 					;;
 			esac
 			label=$(/usr/sbin/scanpartitions -l $1 | awk '$1 ~ /^LABEL=.+/{ print $1 }')
 			if [ "$label" ]; then
-				comment="$device, $label"
+				comment="${comment}${label}"
 			else
-				comment="$device, no label"
+				comment="${comment}no label"
 			fi
 			;;
 	esac
 
-	echo "($comment)"
+	echo "[$comment]"
 }
 
 #--------------------------------------------------------------
