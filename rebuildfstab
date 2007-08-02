@@ -210,7 +210,7 @@ resolve_device_node()
 
 	case "$1" in
 		LABEL=*|UUID=*)
-			node=$(findfs $1 2>/dev/null)
+			node=$(findfs $1)
 			;;
 		/dev/disk/by-*)
 			node=$(readlink -f $1)
