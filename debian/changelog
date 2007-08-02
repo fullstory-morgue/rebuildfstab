@@ -1,8 +1,9 @@
 rebuildfstab (0.6.33) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * Cleanup out() usage, no need for %s and args.
+  * Add ata labels to cdrom devices.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 01 Aug 2007 13:53:39 +0200
+ -- Kel Modderman <kel@otaku42.de>  Thu, 02 Aug 2007 23:36:26 +1000
 
 rebuildfstab (0.6.32) unstable; urgency=low
 

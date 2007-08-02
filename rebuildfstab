@@ -114,7 +114,7 @@ out()
 	if [ "$write_fstab" = "yes" ]; then
 		printf "${@}" >> ${fstab}
 	else
-		printf "$@"
+		printf "${@}"
 	fi
 }
 
@@ -231,23 +231,36 @@ resolve_device_node()
 
 comment_device()
 {
-	local comment="$1"
+	local device="$1"
+	local comment="$device"
+	local label
 	
-	case "$scan_opts" in
-		*labels*)
-			# no need to display label in comment too
+	case "${device#/dev/}" in
+		cdrom)
+			[ -x /lib/udev/ata_id ] && label=$(/lib/udev/ata_id $device 2>/dev/null)
+			if [ -n "$label" ]; then
+				comment="$label"
+			else
+				return 0
+			fi
 			;;
 		*)
+			case "$scan_opts" in
+				*labels*)
+				# no need to display label in comment too
+				return 0
+				;;
+			esac
 			label=$(/usr/sbin/scanpartitions -l $1 | awk '$1 ~ /^LABEL=.+/{ print $1 }')
 			if [ "$label" ]; then
-				comment="$1 $label"
+				comment="$device, $label"
 			else
-				comment="$1 (no label)"
+				comment="$device, no label"
 			fi
 			;;
 	esac
 
-	echo "$comment"
+	echo "($comment)"
 }
 
 #--------------------------------------------------------------
@@ -324,7 +337,7 @@ devs_not_in_media()
 			continue
 		fi
 
-		out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
+		out "# added by rebuildfstab $(comment_device $dev)\n"
 		output $dev_name $pnt $fstype $options $dump $pass
 	done
 	
@@ -393,7 +406,7 @@ devs_in_media()
 					continue
 				fi
 
-				out "# added by rebuildfstab: %s\n" "$(comment_device $dev)"
+				out "# added by rebuildfstab $(comment_device $dev)\n"
 				output $dev_name $point $fstype $options $dump $pass
 				out "\n"
 			fi
@@ -411,11 +424,11 @@ optical_devs()
 		test -b "$i" || continue
 
 		dev="$i"
-		point="/media/$(basename $dev)"
+		point="/media/${dev#/dev/}"
 
 		create_media_entry $point
 
-		out "%s\n" "# added by rebuildfstab"
+		out "# added by rebuildfstab $(comment_device $dev)\n"
 		print_outcdrom $dev $point
 		out "\n"
 	done
@@ -439,7 +452,7 @@ floppy_devs()
 
 			create_media_entry $point
 
-			out "%s\n" "# added by rebuildfstab"
+			out "# added by rebuildfstab\n"
 			output $dev $point $fstype $options $dump $pass
 			out "\n"
 		fi
