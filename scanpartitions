@@ -109,7 +109,7 @@ foreach my $p (sort keys %partitions) {
 			# add to uuid hash
 			$uuid{$$pp{'uuid'}} = 1;
 			# form UUID string for fstab
-			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs|hfsplus)$/) ?
 				"/dev/disk/by-uuid/" . $$pp{'uuid'} :
 				"UUID=" . $$pp{'uuid'};
 		}
@@ -123,7 +123,7 @@ foreach my $p (sort keys %partitions) {
 			# add to label hash
 			$label{$$pp{'label_safe'}} = 1;
 			# form LABEL fstab string
-			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs)$/) ?
+			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs|hfsplus)$/) ?
 				"/dev/disk/by-label/" . $$pp{'label_safe'} : 
 				"LABEL=" . $$pp{'label_safe'};
 			# mountpoint name is label
