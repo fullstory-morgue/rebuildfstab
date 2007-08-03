@@ -1,4 +1,4 @@
-rebuildfstab (0.6.34) UNRELEASED; urgency=low
+rebuildfstab (0.6.34) unstable; urgency=low
 
   * scanpartitions: treat hfsplus as we do ntfs|vfat et al.
 
