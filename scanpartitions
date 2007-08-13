@@ -95,39 +95,37 @@ else {
 dbg(\%partitions);
 
 foreach my $p (sort keys %partitions) {
-	my ($pp, $mntdev, $mntpnt) = ($partitions{$p}, undef, undef);
-	dbg("\$p = '$p'"); dbg(\%{$partitions{$p}});
+	# Usage of hash slice
+	my ($uuid, $usage, $type, $label_safe) = @{ $partitions{$p} }{"uuid", "usage", "type", "label_safe"};
+	my ($mntdev, $mntpnt) = ();
+	dbg("\$p = '$p'"); dbg($partitions{$p});
 
-	next if $$pp{'usage'} !~ /(filesystem|other)/;
-	next if $$pp{'type'} =~ /(unknown|iso9660|udf|squashfs)/;
+	next if $usage !~ /(filesystem|other)/;
+	next if $type =~ /(unknown|iso9660|udf|squashfs)/;
 
-	if ($uuids and $$pp{'uuid'}) {
-		if (defined $uuid{$$pp{'uuid'}}) {
-			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $$pp{'uuid'});
+	if ($uuids and $uuid) {
+		if ($uuid_dups{$uuid}) {
+			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $uuid);
 		}
-		elsif (-b '/dev/disk/by-uuid/' . $$pp{'uuid'}) {
+		else {
 			# add to uuid hash
-			$uuid{$$pp{'uuid'}} = 1;
+			$uuid_dups{$uuid} = 1;
 			# form UUID string for fstab
-			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs|hfsplus)$/) ?
-				"/dev/disk/by-uuid/" . $$pp{'uuid'} :
-				"UUID=" . $$pp{'uuid'};
+			$mntdev = ($type =~ /^(vfat|msdos|ntfs|hfsplus)$/) ? "/dev/disk/by-uuid/$uuid" : "UUID=$uuid";
 		}
 	}
 
-	if ($labels and $$pp{'label_safe'}) {
-		if (defined $label{$$pp{'label_safe'}}) {
-			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $$pp{'label_safe'});
+	if ($labels and $label_safe) {
+		if ($label_dups{$label_safe}) {
+			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $label_safe);
 		}
-		elsif (-b '/dev/disk/by-label/' . $$pp{'label_safe'}) {
+		else {
 			# add to label hash
-			$label{$$pp{'label_safe'}} = 1;
+			$label_dups{$label_safe} = 1;
 			# form LABEL fstab string
-			$mntdev = ($$pp{'type'} =~ /^(vfat|msdos|ntfs|hfsplus)$/) ?
-				"/dev/disk/by-label/" . $$pp{'label_safe'} : 
-				"LABEL=" . $$pp{'label_safe'};
+			$mntdev = ($type =~ /^(vfat|msdos|ntfs|hfsplus)$/) ? "/dev/disk/by-label/$label_safe" : "LABEL=$label_safe";
 			# mountpoint name is label
-			$mntpnt = '/media/' . $$pp{'label_safe'};
+			$mntpnt = "/media/$label_safe";
 		}
 	}
 
@@ -135,10 +133,10 @@ foreach my $p (sort keys %partitions) {
 	$mntdev ||= $p;
 
 	# mountpoint name, none for swap, /media/XXX for everything else
-	$mntpnt = 'none' if $$pp{'type'} eq 'swap';
+	$mntpnt = 'none' if $type eq 'swap';
 	($mntpnt ||= '/media/' . $p) =~ s|/dev/||;
 
 	dbg("\$mntdev = '$mntdev'; \$mntpnt = '$mntpnt'");
 
-	printf("%s %s %s\n", $mntdev, $mntpnt, $$pp{'type'});
+	printf("%s %s %s\n", $mntdev, $mntpnt, $type);
 }

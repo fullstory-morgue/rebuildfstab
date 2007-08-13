@@ -1,8 +1,20 @@
 rebuildfstab (0.6.36) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 13 Aug 2007 18:21:29 +0200
+  [ Michiel de Boer ]
+  * Added cosmetic changes to make the source more readable: simple block
+    scoped scalars, assigned at the beginning of the main loop via hash slice
+  * Removed check for /dev/disk/by-uuid/$uuid and
+    /dev/disk/by-label/$label_safe, because newly created partitions don't
+    appear in /dev/disk until after a reboot. This caused some new installs
+    to have entries in fstab without UUID, just /dev/device. I find this
+    whole situation suboptimal, because this means information about
+    non-*nix partitions now isn't as up-to-date as *nix partitions. This is
+    not Sidux's fault though. Revert or change as needed.
+
+ -- Michiel de Boer <locsmif@rebelhomicide.demon.nl>  Mon, 13 Aug 2007 23:30:19 +0200
 
 rebuildfstab (0.6.35) unstable; urgency=low
 
