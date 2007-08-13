@@ -1,7 +1,4 @@
-rebuildfstab (0.6.36) UNRELEASED; urgency=low
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+rebuildfstab (0.6.36) unstable; urgency=high
 
   [ Michiel de Boer ]
   * Added cosmetic changes to make the source more readable: simple block
