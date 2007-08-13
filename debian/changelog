@@ -15,7 +15,11 @@ rebuildfstab (0.6.36) UNRELEASED; urgency=low
     not Sidux's fault though. Revert or change as needed.
   * Hotfix: some variables not properly predeclared, causing stricture errors
 
- -- Michiel de Boer <locsmif@rebelhomicide.demon.nl>  Tue, 14 Aug 2007 00:30:39 +0200
+  [ Kel Modderman ]
+  * Just call {label,uuid}_dups {label,uuid}_seen, they are not dups until
+    they've been seen.
+
+ -- Kel Modderman <kel@otaku42.de>  Tue, 14 Aug 2007 09:14:10 +1000
 
 rebuildfstab (0.6.35) unstable; urgency=low
 

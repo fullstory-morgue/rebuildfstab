@@ -95,9 +95,8 @@ else {
 dbg(\%partitions);
 
 foreach my $p (sort keys %partitions) {
-	my (%label_dups, %uuid_dups);
-	# Usage of hash slice
-	my ($uuid, $usage, $type, $label_safe) = @{ $partitions{$p} }{"uuid", "usage", "type", "label_safe"};
+	my (%label_seen, %uuid_seen);
+	my ($uuid, $usage, $type, $label_safe) = @{ $partitions{$p} }{'uuid', 'usage', 'type', 'label_safe'};
 	my ($mntdev, $mntpnt) = ();
 	dbg("\$p = '$p'"); dbg($partitions{$p});
 
@@ -105,24 +104,24 @@ foreach my $p (sort keys %partitions) {
 	next if $type =~ /(unknown|iso9660|udf|squashfs)/;
 
 	if ($uuids and $uuid) {
-		if ($uuid_dups{$uuid}) {
+		if ($uuid_seen{$uuid}) {
 			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $uuid);
 		}
 		else {
 			# add to uuid hash
-			$uuid_dups{$uuid} = 1;
+			$uuid_seen{$uuid} = 1;
 			# form UUID string for fstab
 			$mntdev = ($type =~ /^(vfat|msdos|ntfs|hfsplus)$/) ? "/dev/disk/by-uuid/$uuid" : "UUID=$uuid";
 		}
 	}
 
 	if ($labels and $label_safe) {
-		if ($label_dups{$label_safe}) {
+		if ($label_seen{$label_safe}) {
 			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $label_safe);
 		}
 		else {
 			# add to label hash
-			$label_dups{$label_safe} = 1;
+			$label_seen{$label_safe} = 1;
 			# form LABEL fstab string
 			$mntdev = ($type =~ /^(vfat|msdos|ntfs|hfsplus)$/) ? "/dev/disk/by-label/$label_safe" : "LABEL=$label_safe";
 			# mountpoint name is label
