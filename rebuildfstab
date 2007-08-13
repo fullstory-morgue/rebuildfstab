@@ -303,7 +303,7 @@ devs_not_in_media()
 		
 		dev_name="$1"
 		fstype="$3"
-		options="defaults"
+		options="defaults,noatime"
 		
 		case "$pnt" in
 			'/')
@@ -318,7 +318,7 @@ devs_not_in_media()
 				case "${fstype}" in
 					ext[23])
 						# ext[23] specific: remount read only on error
-						options="defaults,errors=remount-ro"
+						options="defaults,errors=remount-ro,noatime"
 						;;
 				esac
 				;;
