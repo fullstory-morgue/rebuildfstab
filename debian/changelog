@@ -13,8 +13,9 @@ rebuildfstab (0.6.36) UNRELEASED; urgency=low
     whole situation suboptimal, because this means information about
     non-*nix partitions now isn't as up-to-date as *nix partitions. This is
     not Sidux's fault though. Revert or change as needed.
+  * Hotfix: some variables not properly predeclared, causing stricture errors
 
- -- Michiel de Boer <locsmif@rebelhomicide.demon.nl>  Mon, 13 Aug 2007 23:30:19 +0200
+ -- Michiel de Boer <locsmif@rebelhomicide.demon.nl>  Tue, 14 Aug 2007 00:30:39 +0200
 
 rebuildfstab (0.6.35) unstable; urgency=low
 

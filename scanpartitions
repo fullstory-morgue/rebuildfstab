@@ -95,6 +95,7 @@ else {
 dbg(\%partitions);
 
 foreach my $p (sort keys %partitions) {
+	my (%label_dups, %uuid_dups);
 	# Usage of hash slice
 	my ($uuid, $usage, $type, $label_safe) = @{ $partitions{$p} }{"uuid", "usage", "type", "label_safe"};
 	my ($mntdev, $mntpnt) = ();
