@@ -37,7 +37,7 @@ sub dbg {
 		print STDERR Dumper($data);
 	}
 	else {
-		printf STDERR "$data\n";
+		print STDERR "$data\n";
 	}
 }
 
