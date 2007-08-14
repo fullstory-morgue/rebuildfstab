@@ -1,3 +1,9 @@
+rebuildfstab (0.6.38) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 14 Aug 2007 11:15:05 +0200
+
 rebuildfstab (0.6.37) unstable; urgency=low
 
   * use print instead of printf when not using format specifier.
