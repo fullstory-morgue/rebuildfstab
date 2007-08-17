@@ -1,4 +1,4 @@
-rebuildfstab (0.6.39) UNRELEASED; urgency=low
+rebuildfstab (0.6.39) unstable; urgency=low
 
   * $labels => $use_labels, $uuids => $seen_uuids.
   * A few cleanups.
