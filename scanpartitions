@@ -96,7 +96,7 @@ dbg(\%partitions);
 
 foreach my $p (sort keys %partitions) {
 	my (%label_seen, %uuid_seen);
-	my ($uuid, $usage, $type, $label_safe) = @{ $partitions{$p} }{'uuid', 'usage', 'type', 'label_safe'};
+	my ($usage, $type, $label, $uuid) = @{ $partitions{$p} }{'usage', 'type', 'label_enc', 'uuid_enc'};
 	my ($mntdev, $mntpnt) = ();
 	dbg("\$p = '$p'"); dbg($partitions{$p});
 
@@ -115,17 +115,17 @@ foreach my $p (sort keys %partitions) {
 		}
 	}
 
-	if ($labels and $label_safe) {
-		if ($label_seen{$label_safe}) {
-			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $label_safe);
+	if ($labels and $label) {
+		if ($label_seen{$label}) {
+			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $label);
 		}
 		else {
 			# add to label hash
-			$label_seen{$label_safe} = 1;
+			$label_seen{$label} = 1;
 			# form LABEL fstab string
-			$mntdev = ($type =~ /^(vfat|msdos|ntfs|hfsplus)$/) ? "/dev/disk/by-label/$label_safe" : "LABEL=$label_safe";
+			$mntdev = ($type =~ /^(vfat|msdos|ntfs|hfsplus)$/) ? "/dev/disk/by-label/$label" : "LABEL=$label";
 			# mountpoint name is label
-			$mntpnt = "/media/$label_safe";
+			$mntpnt = "/media/$label";
 		}
 	}
 
