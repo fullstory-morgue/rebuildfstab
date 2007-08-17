@@ -26,8 +26,8 @@ use Getopt::Long qw(:config bundling no_auto_abbrev);
 
 die("Must be root...\n") unless $> == 0;
 
-my (%partitions, %uuid, %label);
-my ($debug, $uuids, $labels) = (0, 0, 0);
+my (%partitions, %label, %label_seen, %uuid, %uuid_seen);
+my ($debug, $use_uuids, $use_labels) = (0, 0, 0);
 
 sub dbg {
 	return unless $debug;
@@ -76,8 +76,8 @@ sub parse_partitions {
 
 GetOptions(
 	"d|debug" => sub { $debug++ },
-	"u|uuids" => sub { $uuids++ },
-	"l|labels" => sub { $labels++ },
+	"u|uuids" => sub { $use_uuids++ },
+	"l|labels" => sub { $use_labels++ },
 );
 
 if ($debug) {
@@ -95,15 +95,16 @@ else {
 dbg(\%partitions);
 
 foreach my $p (sort keys %partitions) {
-	my (%label_seen, %uuid_seen);
 	my ($usage, $type, $label, $uuid) = @{ $partitions{$p} }{'usage', 'type', 'label_enc', 'uuid_enc'};
 	my ($mntdev, $mntpnt) = ();
-	dbg("\$p = '$p'"); dbg($partitions{$p});
+	
+	dbg("\$p = '$p'");
+	dbg($partitions{$p});
 
-	next if $usage !~ /(filesystem|other)/;
+	next unless $usage =~ /(filesystem|other)/;
 	next if $type =~ /(unknown|iso9660|udf|squashfs)/;
 
-	if ($uuids and $uuid) {
+	if ($use_uuids and $uuid) {
 		if ($uuid_seen{$uuid}) {
 			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $uuid);
 		}
@@ -115,7 +116,7 @@ foreach my $p (sort keys %partitions) {
 		}
 	}
 
-	if ($labels and $label) {
+	if ($use_labels and $label) {
 		if ($label_seen{$label}) {
 			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $label);
 		}
