@@ -2,8 +2,9 @@ rebuildfstab (0.6.39) UNRELEASED; urgency=low
 
   * $labels => $use_labels, $uuids => $seen_uuids.
   * A few cleanups.
+  * Use print where possible.
 
- -- Kel Modderman <kel@otaku42.de>  Fri, 17 Aug 2007 23:06:39 +1000
+ -- Kel Modderman <kel@otaku42.de>  Fri, 17 Aug 2007 23:10:34 +1000
 
 rebuildfstab (0.6.38) unstable; urgency=low
 

@@ -106,7 +106,7 @@ foreach my $p (sort keys %partitions) {
 
 	if ($use_uuids and $uuid) {
 		if ($uuid_seen{$uuid}) {
-			printf(STDERR "Duplicate UUID (%s): %s\n", $p, $uuid);
+			print STDERR "Duplicate UUID ($p): $uuid\n";
 		}
 		else {
 			# add to uuid hash
@@ -118,7 +118,7 @@ foreach my $p (sort keys %partitions) {
 
 	if ($use_labels and $label) {
 		if ($label_seen{$label}) {
-			printf(STDERR "Duplicate LABEL (%s): %s\n", $p, $label);
+			print STDERR "Duplicate LABEL ($p): $label\n";
 		}
 		else {
 			# add to label hash
