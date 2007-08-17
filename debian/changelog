@@ -1,4 +1,4 @@
-rebuildfstab (0.6.38) UNRELEASED; urgency=low
+rebuildfstab (0.6.38) unstable; urgency=low
 
   * ID_FS_{LABEL,UUID}_ENC is used in /etc/udev/persistent.rules to create
     the /dev/disk/by-{label,uuid}/* symlinks, we should also use them.
