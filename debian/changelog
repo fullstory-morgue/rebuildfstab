@@ -1,8 +1,9 @@
-rebuildfstab (0.6.40) UNRELEASED; urgency=low
+rebuildfstab (0.6.40) ORPHANED; urgency=low
 
   * NOT RELEASED YET
+  * ORPHAN PACKAGE.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 17 Aug 2007 16:13:27 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 22 Aug 2007 15:27:39 +0200
 
 rebuildfstab (0.6.39) unstable; urgency=low
 
